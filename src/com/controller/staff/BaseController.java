@@ -99,10 +99,11 @@ public class BaseController {
         return encoder.encode(data);
     }
 	
+	
 	//报名人员个人信息---照片数据
 	@RequestMapping("/staff_photo_data.do")
 	@ResponseBody
-	public String getStaffInfo(Model model,String photo_data,@RequestParam("photo_file") MultipartFile multipartFile) throws IOException{
+	public String getStaffPhotoInfo(Model model,String photo_data,@RequestParam("photo_file") MultipartFile multipartFile) throws IOException{
 		//前端发过来的文件转输入流，然后read进输出流，最后生成文件
 		InputStream in = multipartFile.getInputStream();
 		File outFile = new File("C:\\Users\\Paradise\\Desktop\\1.jpg");
@@ -113,6 +114,20 @@ public class BaseController {
 		}
 		in.close();
 		out.close();
+		return "success";
+	}
+	
+	//报名人员个人信息----表单文字数据
+	@RequestMapping("/staff_form_data.do")
+	@ResponseBody
+	public String getStaffFormInfo(Model model, HttpServletRequest request){
+		String a = request.getParameter("work_year");		//work_year对应前端表单中的<input name="work_year">
+		String[] b = request.getParameterValues("family_alias");	//如果多个name=family_alias，那么这里可以得到一个string数组
+		System.out.println(a);
+		for(int i=0;i<b.length;i++){
+			System.out.println(b[i]);
+		}
+		
 		return "success";
 	}
 }

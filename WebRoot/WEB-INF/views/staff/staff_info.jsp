@@ -296,40 +296,40 @@
 									<div class="control-group">
 										<label class="control-label">现任职务</label>
 										<div class="controls">
-											<select>
+											<select name="organization">
 												<option value="">选择职务所在单位(重要!)</option>
 											</select>
-											<input type="text" placeholder="你的具体职务是?" />
+											<input type="text" placeholder="你的具体职务是?" name="job"/>
 										</div>
 									</div>
 									<div class="control-group">
 										<label class="control-label">竞聘职务</label>
 										<div class="controls">
-											<input class="span6" type="text" placeholder="xxx">
+											<input class="span6" type="text" placeholder="xxx" name="employe_job">
 										</div>
 									</div>
 									<div class="control-group">
 										<label class="control-label">简历</label>
 										<div class="controls">
-											<textarea class="span10 CV" rows="8"></textarea>
+											<textarea class="span10 CV" rows="8" name="cv"></textarea>
 										</div>
 									</div>
 									<div class="control-group">
 										<label class="control-label">奖惩情况</label>
 										<div class="controls">
-											<textarea class="span10" rows="5"></textarea>
+											<textarea class="span10" rows="5" name="reward_and_punishment"></textarea>
 										</div>
 									</div>
 									<div class="control-group">
 										<label class="control-label">年度考核结果</label>
 										<div class="controls">
-											<textarea class="span10" rows="5"></textarea>
+											<textarea class="span10" rows="5" name="check_result"></textarea>
 										</div>
 									</div>
 									<div class="control-group">
 										<label class="control-label">任免理由</label>
 										<div class="controls">
-											<textarea class="span10" rows="5"></textarea>
+											<textarea class="span10" rows="5" name="appoint_reason"></textarea>
 										</div>
 									</div>
 									<div class="control-group">
@@ -347,17 +347,17 @@
 											</thead>
 											<tbody>
 												<tr id="family_first" style="display: none">
-													<td><input type="text" placeholder="xxx" style="width: 40px"></td>
-													<td><input type="text" placeholder="xxx" style="width: 80px"></td>
-													<td><select class="span3 year">
+													<td><input type="text" placeholder="xxx" style="width: 40px" name="family_alias"></td>
+													<td><input type="text" placeholder="xxx" style="width: 80px" name="family_name"></td>
+													<td><select class="span3 year" name="family_born_year">
 															<option value="">请输入</option>
-													</select> / <select class="span3 month">
+													</select> / <select class="span3 month" name="family_born_month">
 															<option value="">请输入</option>
-													</select> / <select class="span3 day">
+													</select> / <select class="span3 day" name="family_born_day">
 															<option value="">请输入</option>
 													</select></td>
-													<td><input type="text" placeholder="xxx" style="width: 80px"></td>
-													<td><input type="text" placeholder="xxx" style="width: 300px"></td>
+													<td><input type="text" placeholder="xxx" style="width: 80px" name="political"></td>
+													<td><input type="text" placeholder="xxx" style="width: 300px" name="work_organization"></td>
 													<td><button type="button" class="btn btn-primary family_delete">删除</button>
 													</td>
 												</tr>
@@ -372,6 +372,9 @@
 						<div class="form-actions">
 							<button type="button" class="btn btn-primary" id="submit">
 								<i class="icon-ok"></i> 保存所有修改结果
+							</button>
+							<button type="button" class="btn btn-primary" id="test">
+								<i class="icon-ok"></i> 查看表单序列化数据
 							</button>
 						</div>
 
@@ -435,8 +438,30 @@
 				$(this).parents('tr').remove();
 			});
 		}
-
-		//var photo = [];
+		
+		$("#test").click(function(){
+			var form_data = $("#info_form").serialize();
+			//alert(form_data);
+			$.ajax({
+				url : 'staff_form_data.do',
+				type : 'post',
+				data : form_data,
+				dataType : 'text',
+				success: function(feedback){
+					alert(feedback);
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					if (xhr.readyState == 0 || xhr.status == 0) {
+						// not really an error
+						return;
+					} else {
+						alert("XHR Status = " + xhr.status);
+						alert("Thrown Error = " + thrownError);
+						alert("AjaxOptions = " + ajaxOptions)
+					}
+				}
+			});
+		});
 
 		$("#submit").click(function() {
 			//创建FormData对象
@@ -447,8 +472,7 @@
 			$.each($('#photo')[0].files, function(i, file) {
 				photo_data.append('photo_file', file);
 			});
-			//var data = $("#info_form").serialize();
-			//alert(data);
+			
 
 			//ajax发送图片到服务器
 			$.ajax({
