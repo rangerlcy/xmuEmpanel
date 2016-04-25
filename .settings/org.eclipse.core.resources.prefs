@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+encoding//WebRoot/WEB-INF/views/staff/staff_info.jsp=UTF-8
+encoding//src/com/dao/BaseDao.java=UTF-8
+encoding//src/com/dao/BaseHibernateDaoSupport.java=UTF-8
+encoding//src/com/security/service/UserInfoLoadFacade.java=UTF-8
+encoding/<project>=UTF-8

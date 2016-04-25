@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8" />
+<title>Metronic | Form Stuff - Form Wizard</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+<meta content="" name="description" />
+<meta content="" name="author" />
+
+<!-- BEGIN GLOBAL MANDATORY STYLES -->
+
+<link href="resource/BackstageCommon/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="resource/BackstageCommon/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
+<link href="resource/BackstageCommon/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link href="resource/BackstageCommon/css/style.css" rel="stylesheet" type="text/css" />
+<link href="resource/BackstageCommon/css/style-responsive.css" rel="stylesheet" type="text/css" />
+<link href="resource/BackstageCommon/css/style-metro.css" rel="stylesheet" type="text/css" />
+
+<!-- END GLOBAL MANDATORY STYLES -->
+
+<link rel="shortcut icon" href="resource/BackstageCommon/image/favicon.ico" />
+
+</head>
+<body>
+	<!-- BEGIN PAGE CONTAINER-->
+
+	<div class="container-fluid">
+		<!-- BEGIN PAGE HEADER-->
+		<div class="row-fluid">
+			<div class="span12">
+				<h3 class="page-title">
+					选任系统教职工用户注册 <small>本页面仅用于教职工注册</small>
+				</h3>
+			</div>
+		</div>
+
+		<!-- END PAGE HEADER-->
+
+		<!-- BEGIN PAGE CONTENT-->
+
+		<div class="row-fluid">
+			<div class="span12">
+				<div class="portlet box blue" id="form_wizard_1">
+					<div class="portlet-title">
+						<div class="caption">
+							<i class="icon-reorder"></i> 请填写下面的注册表单 - <span class="step-title">Step 1 of 3</span>
+						</div>
+					</div>
+
+					<div class="portlet-body form">
+						<form action="#" class="form-horizontal" id="submit_form">
+							<div class="form-wizard">
+								<div class="navbar steps">
+									<div class="navbar-inner">
+										<ul class="row-fluid">
+											<li class="span4"><a href="#tab1" data-toggle="tab" class="step active"> <span class="number">1</span> <span class="desc"><i class="icon-ok"></i> 账号注册</span> </a></li>
+											<li class="span4"><a href="#tab2" data-toggle="tab" class="step"> <span class="number">2</span> <span class="desc"><i class="icon-ok"></i> 填写详细信息</span> </a></li>
+											<li class="span4"><a href="#tab3" data-toggle="tab" class="step"> <span class="number">3</span> <span class="desc"><i class="icon-ok"></i> 确认</span> </a></li>
+										</ul>
+									</div>
+								</div>
+
+								<div id="bar" class="progress progress-success progress-striped">
+									<div class="bar"></div>
+								</div>
+
+								<div class="tab-content">
+									<div class="alert alert-error hide">您填写的信息有误，请更正后重试</div>
+									<div class="alert alert-success hide">表单填写正确</div>
+									<div class="tab-pane active" id="tab1">
+										<h3 class="block">账号信息</h3>
+										<div class="control-group">
+											<label class="control-label">用户名<span class="required">*</span>
+											</label>
+											<div class="controls">
+												<input type="text" class="span6 m-wrap" name="username" /> <span class="help-inline">输入登陆用户名</span>
+											</div>
+										</div>
+										<div class="control-group">
+											<label class="control-label">密码<span class="required">*</span>
+											</label>
+											<div class="controls">
+												<input type="password" class="span6 m-wrap" name="password" id="submit_form_password" /> <span class="help-inline">输入登陆密码</span>
+											</div>
+										</div>
+										<div class="control-group">
+											<label class="control-label">确认密码<span class="required">*</span>
+											</label>
+											<div class="controls">
+												<input type="password" class="span6 m-wrap" name="rpassword" /> <span class="help-inline">请重复输入您的密码</span>
+											</div>
+										</div>
+										<div class="control-group">
+											<label class="control-label">邮箱<span class="required">*</span>
+											</label>
+											<div class="controls">
+												<input type="text" class="span6 m-wrap" name="email" /> <span class="help-inline">填写常用邮箱，该邮箱将作为后续报名中的唯一邮箱</span>
+											</div>
+										</div>
+									</div>
+
+									<div class="tab-pane" id="tab2">
+										<h3 class="block">详细信息</h3>
+										<p style="font-weight: bold">
+											<span style="color: red">注意：</span>以下的内容将作为你的报名信息，你可以后续在你的个人信息中进行编辑
+										</p>
+										<div class="control-group">
+											<label class="control-label">姓名<span class="required">*</span>
+											</label>
+											<div class="controls">
+												<input type="text" class="span6 m-wrap" name="fullname" /> <span class="help-inline">输入你的真实姓名</span>
+											</div>
+										</div>
+
+										<div class="control-group">
+											<label class="control-label">身份证号码<span class="required">*</span>
+											</label>
+											<div class="controls">
+												<input type="text" class="span6 m-wrap" name="card_number" /> <span class="help-inline">输入身份证号码</span>
+											</div>
+										</div>
+
+										<div class="control-group">
+											<label class="control-label">性别
+											</label>
+											<div class="controls">
+												<select class="span2" name="gender">
+													<option>男</option>
+													<option>女</option>
+												</select>
+											</div>
+										</div>
+
+										<div class="control-group">
+											<label class="control-label">民族</label>
+											<div class="controls">
+												<input type="text" placeholder="xxx" name="ethnic">
+											</div>
+										</div>
+										<div class="control-group">
+											<label class="control-label">籍贯</label>
+											<div class="controls">
+												<input type="text" placeholder="xxx" name="origin_place">
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane" id="tab3">
+										<h3 class="block">确认你的信息</h3>
+										<h4 class="form-section">账号信息</h4>
+										<div class="control-group">
+											<label class="control-label">用户名:</label>
+											<div class="controls">
+												<span class="text display-value" data-display="username"></span>
+											</div>
+										</div>
+										<div class="control-group">
+											<label class="control-label">Email:</label>
+											<div class="controls">
+												<span class="text display-value" data-display="email"></span>
+											</div>
+										</div>
+										<h4 class="form-section">详细信息</h4>
+										<div class="control-group">
+											<label class="control-label">姓名:</label>
+											<div class="controls">
+												<span class="text display-value" data-display="fullname"></span>
+											</div>
+										</div>
+										<div class="control-group">
+											<label class="control-label">身份证号码:</label>
+											<div class="controls">
+												<span class="text display-value" data-display="card_number"></span>
+											</div>
+										</div>
+										<div class="control-group">
+											<label class="control-label">性别:</label>
+											<div class="controls">
+												<span class="text display-value" data-display="gender"></span>
+											</div>
+										</div>
+										<div class="control-group">
+											<label class="control-label">民族:</label>
+											<div class="controls">
+												<span class="text display-value" data-display="ethnic"></span>
+											</div>
+										</div>
+										<div class="control-group">
+											<label class="control-label">籍贯:</label>
+											<div class="controls">
+												<span class="text display-value" data-display="origin_place"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="form-actions clearfix">
+									<a href="javascript:;" class="btn button-previous"> <i class="m-icon-swapleft"></i> 上一步 </a> <a href="javascript:;" class="btn blue button-next"> 下一步 <i class="m-icon-swapright m-icon-white"></i> </a> <a href="javascript:;" class="btn green button-submit"> 提交 <i
+										class="m-icon-swapright m-icon-white"></i> </a>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- END PAGE CONTENT-->
+
+	</div>
+
+	<script src="resource/BackstageCommon/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+	<script src="resource/BackstageCommon/js/bootstrap.min.js" type="text/javascript"></script>
+	<!-- BEGIN PAGE LEVEL PLUGINS -->
+	<script type="text/javascript" src="resource/BackstageCommon/js/jquery.validate.min.js"></script>
+	<!--这里修改提示信息，把英文改成中文-->
+	<script type="text/javascript" src="resource/BackstageCommon/js/additional-methods.min.js"></script>
+	<script type="text/javascript" src="resource/BackstageCommon/js/jquery.bootstrap.wizard.min.js"></script>
+	<script type="text/javascript" src="resource/BackstageCommon/js/select2.min.js"></script>
+	<!-- END PAGE LEVEL PLUGINS -->
+
+	<!-- BEGIN PAGE LEVEL SCRIPTS -->
+	<script src="resource/BackstageCommon/js/app.js"></script>
+	<script src="resource/BackstageCommon/js/form-wizard.js"></script>
+	<!--这里修改表单验证规则,以及表单提交-->
+	<!-- END PAGE LEVEL SCRIPTS -->
+
+	<script>
+		jQuery(document).ready(function() {
+
+			// initiate layout and plugins
+
+			App.init();
+
+			FormWizard.init();
+
+		});
+	</script>
+
+	<!-- END JAVASCRIPTS -->
+</body>
+</html>
