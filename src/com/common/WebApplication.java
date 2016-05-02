@@ -89,6 +89,14 @@ public class WebApplication {
 		return getContextPath()+"/upload";
 	}
 	
+	public static String getRealStaffUploadPhoto(){
+		return getContextPath()+"/staff_photo";
+	}
+	
+	public static String getRelativeStaffUploadPhoto(){
+		return "/empanel/staff_photo";
+	}
+	
 	/**
 	 * 得到当前用户照片存放位置
 	 * @return

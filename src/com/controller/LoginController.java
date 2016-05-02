@@ -24,7 +24,7 @@ public class LoginController {
 	public String welcome(Model model){
 		if (WebApplication.getCurrUser().getUsername() != null ){
 			String ssString = WebApplication.getCurrUser().getUsername();
-			LoginUser user = userService.findByUsername(ssString);
+			LoginUser user = userService.loginUserFindByUsername(ssString);
 			Sysrole role =  roleService.getRoleNameByRoleId(user.getRoleId()).get(0);
 			model.addAttribute("user", user);
 			model.addAttribute("role", role);

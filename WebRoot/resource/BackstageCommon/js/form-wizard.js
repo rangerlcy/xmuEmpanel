@@ -260,8 +260,41 @@ var FormWizard = function () {
             });
 
             $('#form_wizard_1').find('.button-previous').hide();
+            
             $('#form_wizard_1 .button-submit').click(function () {
-                alert('Finished! Hope you like it :)');
+                var data = $("#submit_form").serialize();
+                $.ajax({
+                	url : 'sign_in.do',
+    				type : 'post',
+    				data : data,
+    				dataType : 'text',
+    				success : function(feedback) {
+    					if(feedback=="success"){
+    						alert("注册成功");
+    						window.location.href="/empanel";
+    					}
+    					if(feedback=="duplicate_username"){
+    						alert("用户名已经被人使用，请返回修改");
+    					}
+    					if(feedback=="duplicate_email"){
+    						alert("邮箱已经被人使用，请返回修改");
+    					}
+    					if(feedback=="duplicate_cardnum"){
+    						alert("身份证已经被人使用，请返回修改");
+    					}
+    				},
+    				error : function(xhr, ajaxOptions, thrownError) {
+    					if (xhr.readyState == 0 || xhr.status == 0) {
+    						// not really an error
+    						return;
+    					} else {
+    						//alert("注册失败,请检查网络");
+    						alert("XHR Status = " + xhr.status);
+    						alert("Thrown Error = " + thrownError);
+    						alert("AjaxOptions = " + ajaxOptions);
+    					}
+    				}
+                });
             }).hide();
         }
 

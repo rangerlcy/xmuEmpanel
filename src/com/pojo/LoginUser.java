@@ -1,5 +1,8 @@
 package com.pojo;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * LoginUser entity. @author MyEclipse Persistence Tools
  */
@@ -11,6 +14,7 @@ public class LoginUser implements java.io.Serializable {
 	private String username;
 	private String password;
 	private Integer roleId;
+	private Set users = new HashSet(0);
 
 	// Constructors
 
@@ -18,11 +22,19 @@ public class LoginUser implements java.io.Serializable {
 	public LoginUser() {
 	}
 
-	/** full constructor */
+	/** minimal constructor */
 	public LoginUser(String username, String password, Integer roleId) {
 		this.username = username;
 		this.password = password;
 		this.roleId = roleId;
+	}
+
+	/** full constructor */
+	public LoginUser(String username, String password, Integer roleId, Set users) {
+		this.username = username;
+		this.password = password;
+		this.roleId = roleId;
+		this.users = users;
 	}
 
 	// Property accessors
@@ -49,6 +61,14 @@ public class LoginUser implements java.io.Serializable {
 
 	public void setRoleId(Integer roleId) {
 		this.roleId = roleId;
+	}
+
+	public Set getUsers() {
+		return this.users;
+	}
+
+	public void setUsers(Set users) {
+		this.users = users;
 	}
 
 }

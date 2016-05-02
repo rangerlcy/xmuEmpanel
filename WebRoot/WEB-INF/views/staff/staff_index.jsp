@@ -50,14 +50,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <!-- BEGIN USER LOGIN DROPDOWN -->
                 <li class="dropdown user">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img alt="" src="../resource/BackstageCommon/image/photo.jpg" />
-                        <span class="username">Bob Nilson</span>
+                        <img alt="" src="${photo }" style="max-width: 35px; max-height: 35px;"/> 
+                        <span class="username">${username }</span>
                         <i class="icon-angle-down"></i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="extra_profile.html"><i class="icon-user"></i> 个人信息</a></li>
+                        <li><a href="#" data-toggle="modal" data-target="#person_info"><i class="icon-user"></i> 个人信息</a></li>
                         <li class="divider"></li>
-                        <li><a href="login.html"><i class="icon-key"></i> 注销</a></li>
+                        <li><a href="/empanel"><i class="icon-key"></i> 注销</a></li>
                     </ul>
                 </li>
                 <!-- END USER LOGIN DROPDOWN -->
@@ -187,6 +187,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 <!-- END FOOTER -->
 
+<!--person info Modal -->
+	<div class="modal fade" id="person_info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">个人账户信息</h4>
+				</div>
+				<div class="modal-body">
+					用户名：${username } </br>
+					身份证: ${identify } </br>
+					邮箱: ${email } </br>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 <script src="../resource/BackstageCommon/js/jquery-1.11.2.min.js" type="text/javascript"></script>
 <script src="../resource/BackstageCommon/js/bootstrap.min.js" type="text/javascript"></script>

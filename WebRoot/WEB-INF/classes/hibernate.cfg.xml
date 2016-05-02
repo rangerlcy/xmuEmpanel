@@ -32,6 +32,21 @@
 		<mapping resource="com/pojo/RoleResource.hbm.xml" />
 		<mapping resource="com/pojo/Sysrole.hbm.xml" />
 		<mapping resource="com/pojo/LoginUser.hbm.xml" />
+		<mapping resource="com/pojo/Degree.hbm.xml" />
+		<mapping resource="com/pojo/PlaceProvince.hbm.xml" />
+		<mapping resource="com/pojo/PlaceTown.hbm.xml" />
+		<mapping resource="com/pojo/PlaceCity.hbm.xml" />
+		<mapping resource="com/pojo/Organization.hbm.xml" />
+		<mapping resource="com/pojo/EntryformFamily.hbm.xml" />
+		<mapping resource="com/pojo/Empanel.hbm.xml" />
+		<mapping resource="com/pojo/EntryformRelativemerits.hbm.xml" />
+		<mapping resource="com/pojo/EntryformJob.hbm.xml" />
+		<mapping resource="com/pojo/EmpanelJob.hbm.xml" />
+		<mapping resource="com/pojo/EmpanelStudygroup.hbm.xml" />
+		<mapping resource="com/pojo/Entryform.hbm.xml" />
+		<mapping resource="com/pojo/Ethnic.hbm.xml" />
+		<mapping resource="com/pojo/Education.hbm.xml" />
+		<mapping resource="com/pojo/PartyName.hbm.xml" />
 
 	</session-factory>
 

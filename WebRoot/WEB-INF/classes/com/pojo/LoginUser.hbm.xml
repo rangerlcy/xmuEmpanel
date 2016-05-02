@@ -16,5 +16,13 @@
         <property name="roleId" type="java.lang.Integer">
             <column name="roleId" not-null="true" />
         </property>
+        <set name="users" inverse="true">
+            <key>
+                <column name="login_username" length="50" not-null="true">
+                    <comment>关联到登陆表</comment>
+                </column>
+            </key>
+            <one-to-many class="com.pojo.User" />
+        </set>
     </class>
 </hibernate-mapping>

@@ -52,7 +52,8 @@ public class LoginUserDetailServiceImpl implements UserDetailsService{
 		if(StringUtils.isBlank(username)) {
 			return null;
 		}
-		return userService.findByUsername(username);
+		LoginUser loginUser = userService.loginUserFindByUsername(username);
+		return loginUser;
 		
 	}
 	
