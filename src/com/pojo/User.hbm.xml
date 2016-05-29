@@ -10,12 +10,12 @@
             <column name="id" />
             <generator class="identity" />
         </id>
-        <many-to-one name="loginUser" class="com.pojo.LoginUser" fetch="select">
+        <many-to-one name="loginUser" class="com.pojo.LoginUser" fetch="select" lazy="false">
             <column name="login_username" length="50" not-null="true">
                 <comment>关联到登陆表</comment>
             </column>
         </many-to-one>
-        <property name="delFlag" type="java.lang.Short">
+        <property name="delFlag" type="java.lang.Integer">
             <column name="del_flag" />
         </property>
         <property name="identifyNum" type="java.lang.String">

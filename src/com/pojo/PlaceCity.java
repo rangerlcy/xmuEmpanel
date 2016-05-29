@@ -28,8 +28,7 @@ public class PlaceCity implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public PlaceCity(Integer id, PlaceProvince placeProvince, String city,
-			Set placeTowns) {
+	public PlaceCity(Integer id, PlaceProvince placeProvince, String city, Set placeTowns) {
 		this.id = id;
 		this.placeProvince = placeProvince;
 		this.city = city;

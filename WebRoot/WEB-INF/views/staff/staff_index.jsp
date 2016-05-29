@@ -3,6 +3,9 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
@@ -57,7 +60,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <ul class="dropdown-menu">
                         <li><a href="#" data-toggle="modal" data-target="#person_info"><i class="icon-user"></i> 个人信息</a></li>
                         <li class="divider"></li>
-                        <li><a href="/empanel"><i class="icon-key"></i> 注销</a></li>
+                        <li><a href='<c:url value="/j_spring_security_logout" />'><i class="icon-key"></i> 注销</a></li>
                     </ul>
                 </li>
                 <!-- END USER LOGIN DROPDOWN -->
@@ -193,7 +196,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
+						
 					</button>
 					<h4 class="modal-title">个人账户信息</h4>
 				</div>
@@ -210,6 +213,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 
 <script src="../resource/BackstageCommon/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script src="../resource/BackstageCommon/js/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="../resource/BackstageCommon/js/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
 <script src="../resource/BackstageCommon/js/bootstrap.min.js" type="text/javascript"></script>
 <!--[if lt IE 9]>
 <script src="../resource/BackstageCommon/js/excanvas.min.js"></script>
@@ -226,7 +231,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
 	setTimeout(function() {
 			$(".sidebar-option").trigger("change");
-		}, 500);
+		}, 10);
 </script>
 </body>
 </html>

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dao.BaseDao;
-import com.pojo.RoleResource;
 import com.pojo.Sysrole;
 
 @Service
@@ -18,8 +17,6 @@ public class SysRoleService {
 	private Logger logger = LogManager.getLogger(SysRoleService.class);
 	@Autowired
 	BaseDao<Sysrole> sysRoleDao;
-	@Autowired
-	BaseDao<RoleResource> roleResourceDao;
 	
 	/**
 	 * 根据主键查询角色信息

@@ -22,6 +22,7 @@ import com.pojo.Empanel;
 import com.pojo.EmpanelJob;
 import com.pojo.Entryform;
 import com.pojo.EntryformFamily;
+import com.pojo.EntryformJob;
 import com.pojo.Ethnic;
 import com.pojo.LoginUser;
 import com.pojo.Organization;
@@ -31,6 +32,7 @@ import com.pojo.PlaceProvince;
 import com.pojo.PlaceTown;
 import com.pojo.SignInFamily;
 import com.pojo.SignInForm;
+import com.pojo.StaffEmpanelState;
 import com.pojo.User;
 import com.security.pojo.LoginUserDetails;
 import com.service.DegreeService;
@@ -38,6 +40,7 @@ import com.service.EducationService;
 import com.service.EmpanelJobService;
 import com.service.EmpanelService;
 import com.service.EntryFormFamilyService;
+import com.service.EntryFormJobService;
 import com.service.EntryFormService;
 import com.service.EthnicService;
 import com.service.OrganizationService;
@@ -73,8 +76,8 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
+//教职工url拦截
 @Controller
-// 报名拦截器
 @RequestMapping("/staff")
 public class BaseController {
 	@Autowired
@@ -99,6 +102,8 @@ public class BaseController {
 	EmpanelService empanelService;
 	@Autowired
 	EmpanelJobService empanelJobService;
+	@Autowired
+	EntryFormJobService entryFormJobService;
 
 	@RequestMapping("/staff_index.do")
 	public String staff_index(Model model) {
@@ -110,7 +115,7 @@ public class BaseController {
 		User user = userService.userFindByUsername(WebApplication.getCurrUser().getUsername());
 		model.addAttribute("identify", user.getIdentifyNum());
 		model.addAttribute("email", user.getEmail());
-
+		
 		return "staff/staff_index";
 	}
 
@@ -157,10 +162,21 @@ public class BaseController {
 
 	@RequestMapping("/staff_register.do")
 	public String staff_register(Model model) {
-
+		
+		List<StaffEmpanelState> staffEmpanelStates = new ArrayList<StaffEmpanelState>();
+		
 		List<Empanel> empanels = empanelService.queryAllValid();
-		model.addAttribute("empanel", empanels);
-
+		for(Empanel empanel: empanels){
+			int empanelId = empanel.getId();
+			String state = entryformService.queryByUsernameAndEmpanelIdToGetState(empanelId, WebApplication.getCurrUser().getUsername());
+			
+			StaffEmpanelState staffEmpanelState = new StaffEmpanelState();
+			staffEmpanelState.setEmpanel(empanel);
+			staffEmpanelState.setState(state);
+			staffEmpanelStates.add(staffEmpanelState);
+		}
+		model.addAttribute("staffEmpanelState", staffEmpanelStates);
+		
 		Entryform data = entryformService.queryByUsername(WebApplication.getCurrUser().getUsername());
 		model.addAttribute("photo", data.getPicUrl());
 
@@ -189,8 +205,12 @@ public class BaseController {
 	@ResponseBody
 	public void openRegister(int openId, HttpServletResponse response) throws IOException {
 		Empanel empanel = empanelService.queryById(openId);
+		
+		//查询出某次选拔任务下的所有工作岗位
 		List<EmpanelJob> empaneljobList = empanelJobService.queryByEmpanelId(openId);
-
+		
+		int EntryfromId = entryformService.queryIsBindEmpanelId(WebApplication.getCurrUser().getUsername(), openId);		//判断报名表是否绑定到选任工作上, 返回报名表id
+		
 		// 构造List<Map>容器，如果直接用List<EmpanelJob> 转JSON报hibernate lazy初始化异常错误
 		List<HashMap<String, String>> maplist = new ArrayList<HashMap<String, String>>();
 
@@ -205,12 +225,25 @@ public class BaseController {
 			map.put("job", ej.getJob());
 			map.put("level", ej.getLevel());
 			map.put("num", ej.getAmount() + "");
+			
+			if(EntryfromId != -1){
+				//根据报名表id + 工作岗位id， 查询出志愿顺序
+				EntryformJob efj = entryFormJobService.queryByEntryformIdAndEmpanelJobId(EntryfromId, ej.getId());
+				if(efj == null){
+					map.put("seq", "-100");
+				}else{
+					map.put("seq", efj.getJobNum()+"");
+				}
+			}
+			else{
+				map.put("seq", "-100");
+			}
 			maplist.add(map);
 		}
 
-		boolean EntryfromIsBindToEmpanel = entryformService.queryIsBindEmpanelId(WebApplication.getCurrUser().getUsername(), openId);
+		
 		HashMap<String, String> map1 = new HashMap<String, String>();
-		if (EntryfromIsBindToEmpanel) { // 已经有报名表绑定了这个选任工作
+		if (EntryfromId != -1) { // 已经有报名表绑定了这个选任工作
 			map1.put("isBind", "1");
 		} else {
 			map1.put("isBind", "0");
@@ -274,6 +307,7 @@ public class BaseController {
 		String picName = "/photo-" + timeString + ".jpg"; // 全部转成jpg格式
 		String filepath = WebApplication.getRealStaffUploadPhoto() + picName; // 这个是得到绝对路径
 		String relativePath = WebApplication.getRelativeStaffUploadPhoto() + picName;
+		
 		// 前端发过来的文件转输入流，然后read进输出流，最后生成文件
 		if (multipartFile != null) {
 			InputStream in = multipartFile.getInputStream();
@@ -287,7 +321,8 @@ public class BaseController {
 			out.close();
 
 			entryform.setPicUrl(relativePath);
-			entryformService.saveOrUpdate(entryform);
+			entryformService.update(entryform);
+			
 			return "success";
 		}
 		return "";
@@ -296,15 +331,15 @@ public class BaseController {
 	// 报名人员个人信息----表单文字数据
 	@RequestMapping("/staff_form_data.do")
 	@ResponseBody
-	public String getStaffFormInfo(Model model, HttpServletRequest request, SignInForm allData) throws ParseException {
+	public String getStaffFormInfo(Model model, HttpServletRequest request, SignInForm allData) throws ParseException, UnsupportedEncodingException {
 
 		String result = checkSignInFormDataValid(allData);
 		if (result.equals("success")) {
 			Entryform ef = signInForm2Entryform(allData);
 			if (ef == null) {
-				return "fail";
+				return URLEncoder.encode("某种错误导致保存失败，错误代码0001", "UTF-8");
 			}
-			return "success";
+			return URLEncoder.encode("保存数据成功", "UTF-8");
 		} else {
 			return result;
 		}
@@ -328,22 +363,66 @@ public class BaseController {
 	@ResponseBody
 	public String download(Model model, HttpServletRequest request, Integer empanelId) throws Exception {
 		String download_info = request.getParameter("download");
-
 		// 下载绑定选任工作的报名表
 		if (download_info.equals("fix_or_last") && empanelId != null) {
-			System.out.println(empanelId);
 			Entryform ef = entryformService.queryByUsernameAndEmpanelId(WebApplication.getCurrUser().getUsername(), empanelId);
 			String pathString = downloadWordAndWriteWord(ef);
 			return pathString;
 		}
 		// 下载最新的报名表
 		if (download_info.equals("last")) {
-
 			Entryform ef = entryformService.queryByUsername(WebApplication.getCurrUser().getUsername());
 			String pathString = downloadWordAndWriteWord(ef);
 			return pathString;
 		}
 		return "fail";
+	}
+	
+	
+	//确认提交报名
+	@RequestMapping("/submit_register")
+	@ResponseBody
+	public String submit_register(Model model, HttpServletRequest request, Integer empanelId){
+		
+		if(empanelId ==null){		//没有绑定报名表
+			return "NoBindEntryFrom";
+		}
+		
+		//System.out.println(request.getParameter("info"));
+		String str = request.getParameter("info");
+		JSONArray jsonObject = JSONArray.fromObject(str);
+		
+		//检查是否有志愿排序重复
+		int[] a = new int[1000];		//自动初始化为0
+		for(int i=0;i<jsonObject.size(); i++){
+			int jobSeq = Integer.parseInt( jsonObject.getJSONObject(i).getString("jobSeq") );
+			
+			if(jobSeq == -1){
+				continue;
+			}
+			
+			if(a[jobSeq] == 1){
+				return "duplicate";
+			}
+			
+			a[jobSeq] = 1;
+		}
+		
+		Entryform ef = entryformService.queryByUsernameAndEmpanelId(WebApplication.getCurrUser().getUsername(), empanelId);
+		for(int i=0;i<jsonObject.size(); i++){
+			int jobId = Integer.parseInt( jsonObject.getJSONObject(i).getString("jobId") );
+			int jobSeq = Integer.parseInt( jsonObject.getJSONObject(i).getString("jobSeq") );
+			EmpanelJob ej = empanelJobService.queryById(jobId);			//可以报名的选任岗位
+			
+			EntryformJob efj = new EntryformJob();
+			efj.setEmpanelJob(ej);
+			efj.setJobNum(jobSeq);
+			efj.setEntryform(ef);
+			efj.setIsSelected(0);
+			entryFormJobService.addOneItem(efj);
+		}
+		
+		return "success";
 	}
 
 	// 对图片进行base64编码,之后可以写进word转成的xml
@@ -368,30 +447,99 @@ public class BaseController {
 	}
 
 	// 前端表单数据有效性检测
-	private String checkSignInFormDataValid(SignInForm form) {
+	private String checkSignInFormDataValid(SignInForm form) throws UnsupportedEncodingException {
 		// TODO Auto-generated method stub
-		if (form.getParty_name() != "群众") {
-			if (form.getParty_day().isEmpty() || form.getParty_month().isEmpty() || form.getParty_year().isEmpty()) {
-				return "time error0";
+		//URLEncoder.encode(html, "UTF-8");
+		//String error_info= "";
+		
+		if(form.getName().isEmpty()){
+			return URLEncoder.encode("姓名未填写", "UTF-8");
+		}
+		
+		if(form.getGender().isEmpty()){
+			return URLEncoder.encode("性别未填写", "UTF-8");
+		}
+		
+		if(form.getBorn_year().isEmpty() || form.getBorn_month().isEmpty()){
+			return URLEncoder.encode("出生日期未填写", "UTF-8");
+		}
+		
+		if (form.getNation().isEmpty()) {
+			return URLEncoder.encode("民族未填写", "UTF-8");
+		}
+		
+		if(form.getBorn_place_city1().isEmpty() || form.getBorn_place_city2().isEmpty()){
+			return URLEncoder.encode("出生地未填写", "UTF-8");
+		}
+		
+		if(form.getOrigin_place_city1().isEmpty() || form.getOrigin_place_city2().isEmpty()){
+			return URLEncoder.encode("籍贯未填写", "UTF-8");
+		}
+		
+		if(form.getParty_name().isEmpty()){
+			return URLEncoder.encode("政治面目未填写", "UTF-8");
+		}
+		if (!form.getParty_name().equals("群众")) {
+			if (form.getParty_month().isEmpty() || form.getParty_year().isEmpty()) {
+				return URLEncoder.encode("请填写入党时间", "UTF-8");
 			}
 		}
-
-		// 对时间进行检测,所有时间必须填写
-		if (form.getBorn_year().isEmpty() || form.getBorn_month().isEmpty()) {
-			return "time error";
+		
+		if(form.getWork_year().isEmpty() || form.getWork_month().isEmpty()){
+			return URLEncoder.encode("参加工作时间未填写", "UTF-8");
 		}
-		if (form.getSchool_year().isEmpty() || form.getSchool_month().isEmpty()) {
-			return "time error";
+		
+		if(form.getSchool_year().isEmpty() || form.getSchool_month().isEmpty()){
+			return URLEncoder.encode("来校时间未填写", "UTF-8");
 		}
-		if (form.getWork_year().isEmpty() || form.getWork_month().isEmpty()) {
-			return "time error";
+		
+		if(form.getEducation1().isEmpty() || form.getDegree1().isEmpty() || form.getSchool1().isEmpty()){
+			return URLEncoder.encode("全日制教育未填写", "UTF-8");
 		}
+		
+		if(form.getPhone().isEmpty()){
+			return URLEncoder.encode("联系电话未填写", "UTF-8");
+		}
+		
+		if(form.getEmail().isEmpty()){
+			return URLEncoder.encode("邮箱未填写", "UTF-8");
+		}
+		
+		if(form.getOrganization().isEmpty()){
+			return URLEncoder.encode("现任职务所在单位未填写", "UTF-8");
+		}
+		
+		if(form.getJob().isEmpty()){
+			return URLEncoder.encode("现任职务未填写", "UTF-8");
+		}
+		
+		if(form.getCv().isEmpty()){
+			return URLEncoder.encode("简历未填写", "UTF-8");
+		}
+		
 		for (int i = 0; i < form.getFamily_name().length; i++) {
 			if (i == 0) {
 				continue;
 			}
+			
+			if(form.getFamily_alias()[i].isEmpty()){
+				return URLEncoder.encode("家庭成员称谓未填写", "UTF-8");
+			}
+			
+			if(form.getFamily_name()[i].isEmpty()){
+				return URLEncoder.encode("家庭成员姓名未填写", "UTF-8");
+			}
+			
 			if (form.getFamily_born_year()[i].isEmpty() || form.getFamily_born_month()[i].isEmpty()) {
-				return "time error";
+				return URLEncoder.encode("家庭成员出生日期未填写", "UTF-8");
+			}
+			
+			if(form.getPolitical()[i].isEmpty()){
+				return URLEncoder.encode("家庭成员政治面目未填写", "UTF-8");
+			}
+			
+			if(form.getWork_organization()[i].isEmpty()){
+				return URLEncoder.encode("家庭成员工作单位未填写", "UTF-8");
 			}
 		}
 		return "success";
@@ -410,15 +558,13 @@ public class BaseController {
 		entryform.setSex(form.getGender());
 		entryform.setPartyName(form.getParty_name());
 
-		// entryform.setBirth(sdf.parse(form.getBorn_year()+"-"+form.getBorn_month()+"-"+form.getBorn_day()));
-		// //字符串转日期
-		entryform.setBirth(form.getBorn_year() + "-" + form.getBorn_month() + "-" + form.getBorn_day());
+		entryform.setBirth(form.getBorn_year() + "." + form.getBorn_month());
 		entryform.setNationality(form.getNation());
 		entryform.setBirthPlace(form.getBorn_place_city1() + "-" + form.getBorn_place_city2() + "-" + form.getBorn_place_city3());
 		entryform.setNativePlace(form.getOrigin_place_city1() + "-" + form.getOrigin_place_city2() + "-" + form.getOrigin_place_city3());
-		entryform.setJoinPartyTime(form.getParty_year() + "-" + form.getParty_month() + "-" + form.getParty_day());
-		entryform.setWorkTime(form.getWork_year() + "-" + form.getWork_month() + "-" + form.getWork_day());
-		entryform.setCollegeTime(form.getSchool_year() + "-" + form.getSchool_month() + "-" + form.getSchool_day());
+		entryform.setJoinPartyTime(form.getParty_year() + "." + form.getParty_month() );
+		entryform.setWorkTime(form.getWork_year() + "." + form.getWork_month() );
+		entryform.setCollegeTime(form.getSchool_year() + "." + form.getSchool_month() );
 		entryform.setSpecialJob(form.getSkill()); // 专业技术职务
 		entryform.setSpecialSkill(form.getTalent()); // 特长
 		// 全日制教育
@@ -456,7 +602,7 @@ public class BaseController {
 				family.setPolitics(form.getPolitical()[i]);
 				family.setJob(form.getWork_organization()[i]);
 				family.setEntryform(entryform);
-				family.setBirth(form.getFamily_born_year()[i] + "-" + form.getFamily_born_month()[i] + "-" + form.getFamily_born_day()[i]);
+				family.setBirth(form.getFamily_born_year()[i] + "." + form.getFamily_born_month()[i] );
 				entryFormFamilyService.addOneItem(family);
 			}
 		} else {
@@ -471,7 +617,7 @@ public class BaseController {
 				family.setPolitics(form.getPolitical()[i]);
 				family.setJob(form.getWork_organization()[i]);
 				family.setEntryform(entryform);
-				family.setBirth(form.getFamily_born_year()[i] + "-" + form.getFamily_born_month()[i] + "-" + form.getFamily_born_day()[i]);
+				family.setBirth(form.getFamily_born_year()[i] + "." + form.getFamily_born_month()[i] );
 				entryFormFamilyService.addOneItem(family);
 			}
 		}
@@ -491,7 +637,7 @@ public class BaseController {
 		info.setParty_name(entryform.getPartyName());
 		if (entryform.getBirth() != null) {
 			String timeString = entryform.getBirth();
-			String[] timeStr = timeString.split("-");
+			String[] timeStr = timeString.split("\\.");
 			if (timeStr.length > 0) {
 				info.setBorn_year(timeStr[0]);
 			}
@@ -533,14 +679,14 @@ public class BaseController {
 		// 入党时间
 		if (entryform.getJoinPartyTime() != null) {
 			String timeString = entryform.getJoinPartyTime();
-			String[] timeStr = timeString.split("-");
+			String[] timeStr = timeString.split("\\.");
 			if (timeStr.length > 0) {
 				info.setParty_year(timeStr[0]);
 			}
 			if (timeStr.length > 1) {
 				info.setParty_month(timeStr[1]);
 			}
-			if (timeStr.length > 1) {
+			if (timeStr.length > 2) {
 				info.setParty_day(timeStr[2]);
 			}
 
@@ -548,7 +694,7 @@ public class BaseController {
 
 		if (entryform.getWorkTime() != null) {
 			String timeString = entryform.getWorkTime();
-			String[] timeStr = timeString.split("-");
+			String[] timeStr = timeString.split("\\.");
 			if (timeStr.length > 0) {
 				info.setWork_year(timeStr[0]);
 			}
@@ -563,7 +709,7 @@ public class BaseController {
 
 		if (entryform.getCollegeTime() != null) {
 			String timeString = entryform.getCollegeTime();
-			String[] timeStr = timeString.split("-");
+			String[] timeStr = timeString.split("\\.");
 			if (timeStr.length > 0) {
 				info.setSchool_year(timeStr[0]);
 			}
@@ -611,7 +757,7 @@ public class BaseController {
 			family.setFamily_name(data.get(i).getName());
 			if (data.get(i).getBirth() != null) {
 				String timeString = data.get(i).getBirth();
-				String[] timeStr = timeString.split("-");
+				String[] timeStr = timeString.split("\\.");
 				if (timeStr.length > 0) {
 					family.setFamily_born_year(timeStr[0]);
 				}
@@ -632,39 +778,45 @@ public class BaseController {
 
 	// 根据Entryform 下载报名表，对word模板进行写操作,返回下载路径
 	public String downloadWordAndWriteWord(Entryform ef) throws Exception {
-
+		
+		
 		String pathString = WebApplication.getContextPath();
-		pathString += "\\resource\\StaffRes\\word"; // 模板文件所在目录
+		
+		pathString += "/resource/StaffRes/word"; // 模板文件所在目录
 
 		List<EntryformFamily> eff_list = entryFormFamilyService.queryByEntryFormId(ef.getId());
+		
 		// 要填充的数据, 注意map的key要和word中${xxx}的xxx一致
 		Map<String, String> dataMap = new HashMap<String, String>();
+		System.out.println("3333333");
 		dataMap.put("姓名", ef.getName());
+		System.out.println("444444");
 		dataMap.put("性别", ef.getSex());
 		dataMap.put("照片", getImageBase64Str(ef.getPicUrl()));
+		System.out.println("555555");
 		if (!ef.getBirth().isEmpty()) {
-			String[] ss = ef.getBirth().split("-");
-			dataMap.put("年月", ss[0] + "." + ss[1]);
+			dataMap.put("年月", ef.getBirth());
 		}
 		dataMap.put("民族", ef.getNationality());
 		dataMap.put("籍贯", ef.getNativePlace().replaceAll("-", ""));
 		dataMap.put("出生地", ef.getBirthPlace().replaceAll("-", ""));
-		if (!ef.getJoinPartyTime().isEmpty()) {
-			String[] ss = ef.getJoinPartyTime().split("-");
+		if(ef.getPartyName().equals("群众")){
+			dataMap.put("入党时间", "群众");
+		}
+		else{
+			
 			if (ef.getPartyName().equals("中共")) {
-				dataMap.put("入党时间", ss[0] + "." + ss[1]);
+				dataMap.put("入党时间", ef.getJoinPartyTime());
 			} else {
-				dataMap.put("入党时间", ef.getPartyName() + "<w:br />" + ss[0] + "." + ss[1]);
+				dataMap.put("入党时间", ef.getPartyName() + "<w:br />" + ef.getJoinPartyTime());
 			}
 
 		}
 		if (!ef.getWorkTime().isEmpty()) {
-			String[] ss = ef.getWorkTime().split("-");
-			dataMap.put("参加工作", ss[0] + "." + ss[1]);
+			dataMap.put("参加工作", ef.getWorkTime());
 		}
 		if (!ef.getCollegeTime().isEmpty()) {
-			String[] ss = ef.getCollegeTime().split("-");
-			dataMap.put("来校", ss[0] + "." + ss[1]);
+			dataMap.put("来校", ef.getCollegeTime());
 		}
 		dataMap.put("专业技术", ef.getSpecialJob());
 		dataMap.put("特长", ef.getSpecialSkill());
@@ -675,7 +827,7 @@ public class BaseController {
 		dataMap.put("在职学位", ef.getIncumbencyEducationLevel());
 		dataMap.put("在职学校", ef.getIncumbencyEducationCollege());
 		dataMap.put("电话", ef.getTel() + "," + ef.getEmail());
-		dataMap.put("现任职务", ef.getPresentlyJob());
+		dataMap.put("现任职务", ef.getOrganization().getName()+ef.getPresentlyJob());
 		String cvString = ef.getResume().replaceAll("\n", "<w:br />"); // 转换成word里的换行
 		dataMap.put("简历", cvString);
 		dataMap.put("奖惩情况", ef.getPunishReward());
@@ -686,8 +838,7 @@ public class BaseController {
 				dataMap.put("别名" + i, eff.getAppellation());
 				dataMap.put("名字" + i, eff.getName());
 				if (!eff.getBirth().isEmpty()) {
-					String[] ss = eff.getBirth().split("-");
-					dataMap.put("出生" + i, ss[0] + "." + ss[1]);
+					dataMap.put("出生" + i, eff.getBirth());
 				}
 				dataMap.put("政治" + i, eff.getPolitics());
 				dataMap.put("工作" + i, eff.getJob());
@@ -709,7 +860,7 @@ public class BaseController {
 		// Configuration用于读取ftl文件
 		Configuration configuration = new Configuration();
 		configuration.setDefaultEncoding("utf-8");
-
+		
 		/*
 		 * 以下是两种指定ftl文件所在目录路径的方式, 注意这两种方式都是 指定ftl文件所在目录的路径,而不是ftl文件的路径
 		 */
@@ -717,15 +868,19 @@ public class BaseController {
 		// configuration.setClassForTemplateLoading(this.getClass(),"");
 
 		// 指定路径的第二种方式,指明.ftl模板文件所在文件夹
-		configuration.setDirectoryForTemplateLoading(new File(pathString));
-
+		File file = new File(pathString);
+		
+		configuration.setDirectoryForTemplateLoading(file);			//ubuntu服务器不支持freemaker????
+		
 		// 输出文档路径及名称
-		File outFile = new File(pathString + "\\" + WebApplication.getCurrUser().getUsername() + "LastRegister.doc");
+		File outFile = new File(pathString + "/" + WebApplication.getCurrUser().getUsername() + "LastRegister.doc");
 		// 以utf-8的编码读取ftl文件
-		Template t = configuration.getTemplate("报名表模板.ftl", "utf-8");
+		Template t = configuration.getTemplate("register_table_templet.ftl", "utf-8");
+		
 		Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"), 10240);
 		t.process(dataMap, out);
 		out.close();
+		
 		return "/empanel/resource/StaffRes/word/" + WebApplication.getCurrUser().getUsername() + "LastRegister.doc";
 	}
 }

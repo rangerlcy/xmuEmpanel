@@ -11,8 +11,8 @@ public class EntryformJob implements java.io.Serializable {
 	private Integer id;
 	private Entryform entryform;
 	private EmpanelJob empanelJob;
-	private Short jobNum;
-	private Short isSelected;
+	private Integer jobNum;
+	private Integer isSelected;
 
 	// Constructors
 
@@ -21,9 +21,7 @@ public class EntryformJob implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public EntryformJob(Integer id, Entryform entryform, EmpanelJob empanelJob,
-			Short jobNum, Short isSelected) {
-		this.id = id;
+	public EntryformJob(Entryform entryform, EmpanelJob empanelJob, Integer jobNum, Integer isSelected) {
 		this.entryform = entryform;
 		this.empanelJob = empanelJob;
 		this.jobNum = jobNum;
@@ -56,19 +54,19 @@ public class EntryformJob implements java.io.Serializable {
 		this.empanelJob = empanelJob;
 	}
 
-	public Short getJobNum() {
+	public Integer getJobNum() {
 		return this.jobNum;
 	}
 
-	public void setJobNum(Short jobNum) {
+	public void setJobNum(Integer jobNum) {
 		this.jobNum = jobNum;
 	}
 
-	public Short getIsSelected() {
+	public Integer getIsSelected() {
 		return this.isSelected;
 	}
 
-	public void setIsSelected(Short isSelected) {
+	public void setIsSelected(Integer isSelected) {
 		this.isSelected = isSelected;
 	}
 

@@ -23,6 +23,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	你当前的角色是:${role.roleName }
     	你登陆的账号是:${user.username }
     	你登陆的密码是:${user.password }
-    	<a href="staff/staff_index.do">go</a>	
+    	<a href="staff/staff_index.do">staff_go</a>
+    	<a href="org/org_index.do">org_go</a>
+    	<a href="PSG/PSG_index.do">permanent_studygroup_go</a>
+    	<a href="TSG/TSG_index.do">temporary_studygroup_go</a>
   </body>
 </html>

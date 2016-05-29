@@ -10,7 +10,7 @@ public class EntryformRelativemerits implements java.io.Serializable {
 
 	private Integer id;
 	private Entryform entryform;
-	private Short type;
+	private Integer type;
 	private String content;
 
 	// Constructors
@@ -20,14 +20,13 @@ public class EntryformRelativemerits implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public EntryformRelativemerits(Entryform entryform, Short type) {
+	public EntryformRelativemerits(Entryform entryform, Integer type) {
 		this.entryform = entryform;
 		this.type = type;
 	}
 
 	/** full constructor */
-	public EntryformRelativemerits(Entryform entryform, Short type,
-			String content) {
+	public EntryformRelativemerits(Entryform entryform, Integer type, String content) {
 		this.entryform = entryform;
 		this.type = type;
 		this.content = content;
@@ -51,11 +50,11 @@ public class EntryformRelativemerits implements java.io.Serializable {
 		this.entryform = entryform;
 	}
 
-	public Short getType() {
+	public Integer getType() {
 		return this.type;
 	}
 
-	public void setType(Short type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 

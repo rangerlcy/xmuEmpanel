@@ -22,7 +22,7 @@
         <property name="level" type="java.lang.String">
             <column name="level" not-null="true" />
         </property>
-        <property name="amount" type="java.lang.Short">
+        <property name="amount" type="java.lang.Integer">
             <column name="amount" not-null="true" />
         </property>
         <set name="entryformJobs" inverse="true">

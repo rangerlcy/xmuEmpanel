@@ -15,7 +15,8 @@ public class EntryformFamily implements java.io.Serializable,Cloneable {
 	private String birth;
 	private String politics;
 	private String job;
-	
+
+	// Constructors
 	
 	@Override
 	public EntryformFamily clone(){
@@ -28,16 +29,12 @@ public class EntryformFamily implements java.io.Serializable,Cloneable {
         return eff; 
 	}
 	
-	
-	// Constructors
-
 	/** default constructor */
 	public EntryformFamily() {
 	}
 
 	/** full constructor */
-	public EntryformFamily(Entryform entryform, String appellation,
-			String name, String birth, String politics, String job) {
+	public EntryformFamily(Entryform entryform, String appellation, String name, String birth, String politics, String job) {
 		this.entryform = entryform;
 		this.appellation = appellation;
 		this.name = name;

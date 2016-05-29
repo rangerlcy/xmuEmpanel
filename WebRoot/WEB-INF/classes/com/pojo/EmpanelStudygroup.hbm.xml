@@ -10,14 +10,22 @@
             <column name="id" />
             <generator class="identity" />
         </id>
-        <many-to-one name="organization" class="com.pojo.Organization" fetch="select">
+        <many-to-one name="studygroup" class="com.pojo.Studygroup" fetch="select" lazy="false">
+            <column name="study_group_id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="organization" class="com.pojo.Organization" fetch="select" lazy="false">
             <column name="organization_id" not-null="true" />
         </many-to-one>
-        <property name="studyGroupId" type="java.lang.Integer">
-            <column name="study_group_id" not-null="true" />
-        </property>
         <property name="empanelId" type="java.lang.Integer">
             <column name="empanel_id" not-null="true" />
         </property>
+        <set name="meetingrecommends" inverse="true">
+            <key>
+                <column name="allocate_id">
+                    <comment>分配任务</comment>
+                </column>
+            </key>
+            <one-to-many class="com.pojo.Meetingrecommend" />
+        </set>
     </class>
 </hibernate-mapping>

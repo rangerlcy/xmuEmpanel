@@ -10,10 +10,10 @@
             <column name="id" />
             <generator class="identity" />
         </id>
-        <many-to-one name="entryform" class="com.pojo.Entryform" fetch="select">
+        <many-to-one name="entryform" class="com.pojo.Entryform" fetch="select" lazy="false">
             <column name="entry_form_id" not-null="true" />
         </many-to-one>
-        <property name="type" type="java.lang.Short">
+        <property name="type" type="java.lang.Integer">
             <column name="type" not-null="true">
                 <comment>优点还是缺点</comment>
             </column>

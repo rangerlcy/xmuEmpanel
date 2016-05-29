@@ -10,10 +10,10 @@
             <column name="id" />
             <generator class="identity" />
         </id>
-        <many-to-one name="user" class="com.pojo.User" fetch="select">
+        <many-to-one name="user" class="com.pojo.User" fetch="select" lazy="false">
             <column name="user_id" />
         </many-to-one>
-        <many-to-one name="empanel" class="com.pojo.Empanel" fetch="select">
+        <many-to-one name="empanel" class="com.pojo.Empanel" fetch="select" lazy="false">
             <column name="empanel_id" />
         </many-to-one>
         <many-to-one name="organization" class="com.pojo.Organization" fetch="select" lazy="false">
@@ -137,6 +137,12 @@
                 <comment>党派名称</comment>
             </column>
         </property>
+        <set name="meetingrecommendStates" inverse="true">
+            <key>
+                <column name="entry_form_id" not-null="true" />
+            </key>
+            <one-to-many class="com.pojo.MeetingrecommendState" />
+        </set>
         <set name="entryformJobs" inverse="true">
             <key>
                 <column name="entry_form_id" not-null="true" />
@@ -148,6 +154,12 @@
                 <column name="entry_form_id" not-null="true" />
             </key>
             <one-to-many class="com.pojo.EntryformFamily" />
+        </set>
+        <set name="talkrecommendStates" inverse="true">
+            <key>
+                <column name="entry_form_id" not-null="true" />
+            </key>
+            <one-to-many class="com.pojo.TalkrecommendState" />
         </set>
         <set name="entryformRelativemeritses" inverse="true">
             <key>

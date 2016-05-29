@@ -5,7 +5,9 @@
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
@@ -28,6 +30,12 @@
 <!-- END GLOBAL MANDATORY STYLES -->
 <link rel="shortcut icon" href="../resource/BackstageCommon/image/favicon.ico" />
 
+<style type="text/css">
+	.table_font{
+		font-size: 18px; 
+		font-weight: bold;
+	}
+</style>
 </head>
 
 <body class="page-header-fixed">
@@ -54,7 +62,7 @@
 							<li><a href="#" data-toggle="modal" data-target="#person_info"><i class="icon-user"></i> 个人信息</a></li>
 							</li>
 							<li class="divider"></li>
-							<li><a href="/empanel"><i class="icon-key"></i> 注销</a>
+							<li><a href='<c:url value="/j_spring_security_logout"/>'><i class="icon-key"></i> 注销</a>
 							</li>
 						</ul></li>
 					<!-- END USER LOGIN DROPDOWN -->
@@ -130,17 +138,19 @@
 								<th>名称</th>
 								<th>报名开始时间</th>
 								<th>报名结束时间</th>
+								<th>状态</th>
 								<th>操作</th>
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach items="${empanel}" var="uv">
+							<c:forEach items="${staffEmpanelState}" var="uv">
 								<tr>
-									<td><span style="font-size: 18px; font-weight: bold;">${uv.name }</span></td>
-									<td>${uv.startTime }</td>
-									<td>${uv.endTime }</td>
-									<td><button type="button" class="btn btn-primary openDetail" TID="${uv.id }">查看详情</button>
-										<button type="button" class="btn btn-primary openRegister" TID="${uv.id }">报名</button>
+									<td class="table_font">${uv.empanel.name }</td>
+									<td class="table_font">${uv.empanel.startTime }</td>
+									<td class="table_font">${uv.empanel.endTime }</td>
+									<td class="table_font">${uv.state}</td>
+									<td><button type="button" class="btn btn-primary openDetail" TID="${uv.empanel.id }">查看详情</button>
+										<button type="button" class="btn btn-primary openRegister" TID="${uv.empanel.id }">报名</button>
 									</td>
 								</tr>
 							</c:forEach>
@@ -168,7 +178,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
+						
 					</button>
 					<h4 class="modal-title" id="detail_title"></h4>
 				</div>
@@ -183,12 +193,12 @@
 	</div>
 
 	<!--register Modal -->
-	<div class="modal fade" id="register_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal fade" id="register_modal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
+						
 					</button>
 					<h4 class="modal-title" id="register_title">2016年1月科级选任---报名</h4>
 				</div>
@@ -230,7 +240,7 @@
 					</table>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" id="submit_register">确认</button>
+					<button type="button" class="btn btn-primary" id="submit_register">提交报名(点击后不可修改)</button>
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 				</div>
 			</div>
@@ -238,12 +248,12 @@
 	</div>
 	
 	<!--person info Modal -->
-	<div class="modal fade" id="person_info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal fade" id="person_info" tabindex="-1" role="dialog" aria-hidden="true" style="display: none">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
+						
 					</button>
 					<h4 class="modal-title">个人账户信息</h4>
 				</div>
@@ -260,6 +270,8 @@
 	</div>
 
 	<script src="../resource/BackstageCommon/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+	<script src="../resource/BackstageCommon/js/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="../resource/BackstageCommon/js/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
 	<script src="../resource/BackstageCommon/js/bootstrap.min.js" type="text/javascript"></script>
 	<!--[if lt IE 9]>
 <script src="../resource/BackstageCommon/js/excanvas.min.js"></script>
@@ -276,7 +288,7 @@
 
 		setTimeout(function() {
 			$(".sidebar-option").trigger("change");
-		}, 500);
+		}, 10);
 
 		$(".openDetail").click(function() {
 			//console.log($(this).attr("TID"));
@@ -313,41 +325,20 @@
 			var thiz = this;
 			$.getJSON("open_register.do?openId="+$(this).attr("TID"),function(data){
 				
+				console.log(data);
 				$("#register_title").empty();
 				$("#register_title").append(data[0].title+"--------报名");
 				//把选任的id加进来，确认使用报名表要用到
 				$("#register_title").append("<span id='empanel_id' style='display:none'>"+$(thiz).attr("TID")+" </span>");
 				$("#register_table").empty();
 				
-				//option的构造
-				var st = "";
-				for(var i=1;i<data.length-1;i++){
-					st+="<option value=\""+i+"\">"+i+"</option>";
-				}
-				//表格内容填充
-				for(var i=1; i<data.length-1;i++){
-					var str="";
-					str +=  "<tr>"+
-"							<td><span>"+data[i].organization+"</span></td>"+
-"							<td>"+data[i].job+"</td>"+
-"							<td>"+data[i].level+"</td>"+
-"							<td>"+data[i].num+"</td>"+
-"							<td TID=\""+data[i].jobid+"\"><select style=\"width:100px\">"+
-"								<option>不报名</option>"+
-								st+
-"							</select></td>"+
-"							</tr>";
-					$("#register_table").append(str);
-				}
-				
-				
 				if(data[data.length-1].isBind==1){		//报名表已经绑定了选任工作
 					$("#fix_info").html('该选任工作里的报名表信息已经确认');
 					$("#fix_info").addClass('disabled');
 					//禁用绑定报名表点击
 					$("#fix_info").unbind();
-					//允许提交报名
 					
+					//允许提交报名
 					$("#submit_register").removeClass('disabled');
 					
 					//判断是否绑定了点击事件
@@ -361,6 +352,7 @@
 					alert($._data($("#submit_register")[0],"events"));
 					console.log($._data($("#submit_register")[0],"events"));
 					*/
+					
 				}else{
 					$("#fix_info").html('确认使用报名表');
 					$("#fix_info").removeClass('disabled');
@@ -375,6 +367,67 @@
 					//禁用提交报名
 					$("#submit_register").addClass('disabled');
 					$("#submit_register").unbind();
+				}
+				
+				
+				var  flag = 0;
+				for(var i=1; i<data.length-1;i++){
+					//alert(data[i].seq);
+					if(data[i].seq != "-100"){
+						flag=1;
+					}
+				}
+				if(flag == 0){			//说明还没有确认报名
+					//option的构造
+					var st = "";
+					for(var i=1;i<data.length-1;i++){
+						st+="<option value=\""+i+"\">"+i+"</option>";
+					}
+				
+					//表格内容填充
+					for(var i=1; i<data.length-1;i++){
+					
+						var str="";
+						str +=  "<tr >"+
+"								<td><span>"+data[i].organization+"</span></td>"+
+"								<td>"+data[i].job+"</td>"+
+"								<td>"+data[i].level+"</td>"+
+"								<td>"+data[i].num+"</td>"+
+"								<td class='job_info' TID=\""+data[i].jobId+"\"><select style=\"width:100px\">"+
+"									<option value='-1'>不报名</option>"+
+									st+
+"								</select></td>"+
+"								</tr>";
+						$("#register_table").append(str);
+					}
+				}
+				else{			//已经提交报名过了
+					//表格内容填充
+					for(var i=1; i<data.length-1;i++){
+						var str="";
+						if(data[i].seq == "-1"){
+							str +=  "<tr >"+
+"								<td><span>"+data[i].organization+"</span></td>"+
+"								<td>"+data[i].job+"</td>"+
+"								<td>"+data[i].level+"</td>"+
+"								<td>"+data[i].num+"</td>"+
+"								<td class='job_info' TID=\""+data[i].jobId+"\">不报名</td>"+
+"								</tr>";
+						}
+						else{
+							str +=  "<tr >"+
+"								<td><span>"+data[i].organization+"</span></td>"+
+"								<td>"+data[i].job+"</td>"+
+"								<td>"+data[i].level+"</td>"+
+"								<td>"+data[i].num+"</td>"+
+"								<td class='job_info' TID=\""+data[i].jobId+"\">"+data[i].seq+"</td>"+
+"								</tr>";
+						}
+						$("#register_table").append(str);
+					}
+					//禁用提交报名
+					$("#submit_register").addClass('disabled');
+					$("#submit_register").unbind();	
 				}
 				
 				$('#register_modal').modal('show');
@@ -415,7 +468,7 @@
 			});
 		});
 
-		//将报名表与选任工作绑定，且在此次选任工作不可修改报名表中的信息
+		//将报名表与选任工作绑定，一旦确定后在此次选任工作不可修改报名表中的信息
 		function fix_info(){
 			$.ajax({
 				url : 'fix_register_table.do',
@@ -449,9 +502,53 @@
 				}
 			});
 		}
+		
 		//提交报名的函数，一旦提交，则个人报名阶段完成
 		function submit(){
-			alert("确定提交？");
+			var data = new Array();
+			$(".job_info").each(function(){
+				var id = $(this).attr("TID");
+				var seq = $(this).children("select").val();
+				//console.log("jobId:"+id+" , seq:"+seq);
+				var obj = {jobId:id, jobSeq:seq};
+				data.push(obj);
+			});
+			
+			//console.log(JSON.stringify(data));
+			var json = JSON.stringify(data);
+			$.ajax({
+				url : 'submit_register.do',
+				type : 'post',
+				data : {
+					info : json,
+					empanelId : $("#empanel_id").html()  //选任工作id
+				
+				},
+				dataType : 'text',
+				success : function(feedback) {
+					//alert(feedback);
+					if(feedback =='success'){
+						alert("报名成功");
+						//禁用提交报名
+						$("#submit_register").addClass('disabled');
+						$("#submit_register").unbind();	
+					}
+					if(feedback == 'duplicate'){
+						alert("存在重复的志愿顺序，请修改");
+					}
+					
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					if (xhr.readyState == 0 || xhr.status == 0) {
+						// not really an error
+						return;
+					} else {
+						alert("XHR Status = " + xhr.status);
+						alert("Thrown Error = " + thrownError);
+						alert("AjaxOptions = " + ajaxOptions);
+					}
+				}
+			});
 		}
 	</script>
 </body>

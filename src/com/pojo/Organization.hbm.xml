@@ -13,7 +13,7 @@
         <property name="name" type="java.lang.String">
             <column name="name" not-null="true" />
         </property>
-        <property name="delFlag" type="java.lang.Short">
+        <property name="delFlag" type="java.lang.Integer">
             <column name="del_flag" not-null="true" />
         </property>
         <set name="entryforms" inverse="true">

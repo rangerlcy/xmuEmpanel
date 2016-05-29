@@ -13,7 +13,7 @@ public class Organization implements java.io.Serializable {
 
 	private Integer id;
 	private String name;
-	private Short delFlag;
+	private Integer delFlag;
 	private Set entryforms = new HashSet(0);
 	private Set empanelStudygroups = new HashSet(0);
 	private Set empanelJobs = new HashSet(0);
@@ -25,14 +25,13 @@ public class Organization implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Organization(String name, Short delFlag) {
+	public Organization(String name, Integer delFlag) {
 		this.name = name;
 		this.delFlag = delFlag;
 	}
 
 	/** full constructor */
-	public Organization(String name, Short delFlag, Set entryforms,
-			Set empanelStudygroups, Set empanelJobs) {
+	public Organization(String name, Integer delFlag, Set entryforms, Set empanelStudygroups, Set empanelJobs) {
 		this.name = name;
 		this.delFlag = delFlag;
 		this.entryforms = entryforms;
@@ -58,11 +57,11 @@ public class Organization implements java.io.Serializable {
 		this.name = name;
 	}
 
-	public Short getDelFlag() {
+	public Integer getDelFlag() {
 		return this.delFlag;
 	}
 
-	public void setDelFlag(Short delFlag) {
+	public void setDelFlag(Integer delFlag) {
 		this.delFlag = delFlag;
 	}
 

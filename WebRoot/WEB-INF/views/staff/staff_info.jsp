@@ -6,6 +6,8 @@
 			+ path + "/";
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
@@ -60,7 +62,7 @@
 						<ul class="dropdown-menu">
 							<li><a href="#" data-toggle="modal" data-target="#person_info"><i class="icon-user"></i> 个人信息</a></li>
 							<li class="divider"></li>
-							<li><a href="/empanel"><i class="icon-key"></i> 注销</a></li>
+							<li><a href="<c:url value="/j_spring_security_logout"/>"><i class="icon-key"></i> 注销</a></li>
 						</ul>
 					</li>
 					<!-- END USER LOGIN DROPDOWN -->
@@ -147,7 +149,7 @@
 								<form class="form-horizontal" id="info_form">
 									<div class="control-group">
 
-										<label class="control-label">照片</label>
+										<label class="control-label">照片<span style="color: red">*</span></label>
 
 										<div class="controls">
 											<div class="fileupload fileupload-new" data-provides="fileupload">
@@ -164,13 +166,13 @@
 
 									</div>
 									<div class="control-group">
-										<label class="control-label">姓名</label>
+										<label class="control-label">姓名<span style="color: red">*</span></label>
 										<div class="controls">
 											<input type="text" placeholder="xxx" name="name" value="${info.name }">
 										</div>
 									</div>
 									<div class="control-group">
-										<label class="control-label">性别</label>
+										<label class="control-label">性别<span style="color: red">*</span></label>
 										<div class="controls">
 											<c:choose>
 												<c:when test="${info.gender == null or info.gender =='' }">
@@ -201,11 +203,11 @@
 										</div>
 									</div>
 									<div class="control-group">
-										<label class="control-label">出生年月</label>
+										<label class="control-label">出生年月<span style="color: red">*</span></label>
 										<div class="controls">
 											<select class="span2 year" name="born_year">
 												<option value="">请输入</option>
-												<c:forEach var="x" begin="1990" end="2020">
+												<c:forEach var="x" begin="1900" end="2020">
 													<!-- 这里用c:choose里面的c:when无法判断相等,不知道抽什么风TMD  -->
 													<c:if test="${info.born_year == x }">
 														<option value="${x}" selected="selected">${x}</option>
@@ -224,21 +226,11 @@
 														<option value="${x}">${x}</option>
 													</c:if>
 												</c:forEach>
-											</select> / <select class="span2 day" name="born_day">
-												<option value="">请输入</option>
-												<c:forEach var="x" begin="1" end="31">
-													<c:if test="${info.born_day == x }">
-														<option value="${x}" selected="selected">${x}</option>
-													</c:if>
-													<c:if test="${info.born_day != x }">
-														<option value="${x}">${x}</option>
-													</c:if>
-												</c:forEach>
 											</select>
 										</div>
 									</div>
 									<div class="control-group">
-										<label class="control-label">民族</label>
+										<label class="control-label">民族<span style="color: red">*</span></label>
 										<div class="controls">
 											<select class="nation" name="nation">
 												<option value="">请选择</option>
@@ -255,7 +247,7 @@
 									</div>
 
 									<div class="control-group">
-										<label class="control-label">籍贯</label>
+										<label class="control-label">籍贯<span style="color: red">*</span></label>
 										<div class="controls">
 											<select class="span2 province_select" name="origin_place_city1" id="xxx">
 												<option value="">省</option>
@@ -289,7 +281,7 @@
 									</div>
 
 									<div class="control-group">
-										<label class="control-label">出生地</label>
+										<label class="control-label">出生地<span style="color: red">*</span></label>
 										<div class="controls">
 											<select class="span2 province_select" name="born_place_city1">
 												<option value="">省</option>
@@ -322,7 +314,7 @@
 									</div>
 									
 									<div class="control-group">
-										<label class="control-label">政治面貌</label>
+										<label class="control-label">政治面貌<span style="color: red">*</span></label>
 										<div class="controls">
 											<select name="party_name">
 												<option value="">请输入</option>
@@ -339,11 +331,11 @@
 										</div>
 									</div>
 									<div class="control-group">
-										<label class="control-label">入党时间</label>
+										<label class="control-label">入党时间<span style="color: red">*</span></label>
 										<div class="controls">
 											<select class="span2 year" name="party_year">
 												<option value="">请输入</option>
-												<c:forEach var="x" begin="1990" end="2020">
+												<c:forEach var="x" begin="1900" end="2020">
 													<c:if test="${info.party_year == x }">
 														<option value="${x}" selected="selected">${x}</option>
 													</c:if>
@@ -361,25 +353,15 @@
 														<option value="${x}">${x}</option>
 													</c:if>
 												</c:forEach>
-											</select> / <select class="span2 day" name="party_day">
-												<option value="">请输入</option>
-												<c:forEach var="x" begin="1" end="31">
-													<c:if test="${info.party_day == x }">
-														<option value="${x}" selected="selected">${x}</option>
-													</c:if>
-													<c:if test="${info.party_day != x }">
-														<option value="${x}">${x}</option>
-													</c:if>
-												</c:forEach>
 											</select>
 										</div>
 									</div>
 									<div class="control-group">
-										<label class="control-label">参加工作时间</label>
+										<label class="control-label">参加工作时间<span style="color: red">*</span></label>
 										<div class="controls">
 											<select class="span2 year" name="work_year">
 												<option value="">请输入</option>
-												<c:forEach var="x" begin="1990" end="2020">
+												<c:forEach var="x" begin="1900" end="2020">
 													<c:if test="${info.work_year == x }">
 														<option value="${x}" selected="selected">${x}</option>
 													</c:if>
@@ -397,25 +379,15 @@
 														<option value="${x}">${x}</option>
 													</c:if>
 												</c:forEach>
-											</select> / <select class="span2 day" name="work_day">
-												<option value="">请输入</option>
-												<c:forEach var="x" begin="1" end="31">
-													<c:if test="${info.work_day == x }">
-														<option value="${x}" selected="selected">${x}</option>
-													</c:if>
-													<c:if test="${info.work_day != x }">
-														<option value="${x}">${x}</option>
-													</c:if>
-												</c:forEach>
 											</select>
 										</div>
 									</div>
 									<div class="control-group">
-										<label class="control-label">来校时间</label>
+										<label class="control-label">来校时间<span style="color: red">*</span></label>
 										<div class="controls">
 											<select class="span2 year" name="school_year">
 												<option value="">请输入</option>
-												<c:forEach var="x" begin="1990" end="2020">
+												<c:forEach var="x" begin="1900" end="2020">
 													<c:if test="${info.school_year == x }">
 														<option value="${x}" selected="selected">${x}</option>
 													</c:if>
@@ -430,16 +402,6 @@
 														<option value="${x}" selected="selected">${x}</option>
 													</c:if>
 													<c:if test="${info.school_month != x }">
-														<option value="${x}">${x}</option>
-													</c:if>
-												</c:forEach>
-											</select> / <select class="span2 day" name="school_day">
-												<option value="">请输入</option>
-												<c:forEach var="x" begin="1" end="31">
-													<c:if test="${info.school_day == x }">
-														<option value="${x}" selected="selected">${x}</option>
-													</c:if>
-													<c:if test="${info.school_day != x }">
 														<option value="${x}">${x}</option>
 													</c:if>
 												</c:forEach>
@@ -465,7 +427,7 @@
 										<div class="controls"></div>
 									</div>
 									<div class="control-group">
-										<label class="control-label">学历</label>
+										<label class="control-label">学历<span style="color: red">*</span></label>
 										<div class="controls">
 											<select name="education1">
 												<option value="">请选择</option>
@@ -477,7 +439,7 @@
 														<option value="${uv.education }">${uv.education }</option>
 													</c:if>
 												</c:forEach>
-											</select> <span class="form_font">学位</span> <select name="degree1">
+											</select> <span class="form_font">学位<span style="color: red">*</span></span> <select name="degree1">
 												<option>请选择</option>
 												<c:forEach items="${degree }" var="uv">
 													<c:if test="${uv.degree == info.degree1 }">
@@ -487,7 +449,7 @@
 														<option value="${uv.degree }">${uv.degree }</option>
 													</c:if>
 												</c:forEach>
-											</select> <span class="form_font">毕业院校及专业</span> <input type="text" placeholder="xx大学xx系xx专业" name="school1" value="${info.school1 }">
+											</select> <span class="form_font">毕业院校及专业<span style="color: red">*</span></span> <input type="text" placeholder="xx大学xx系xx专业" name="school1" value="${info.school1 }">
 										</div>
 									</div>
 
@@ -510,7 +472,7 @@
 													</c:if>
 												</c:forEach>
 											</select> <span class="form_font">学位</span> <select name="degree2">
-												<option>请选择</option>
+												<option value="">请选择</option>
 												<c:forEach items="${degree }" var="uv">
 													<c:if test="${uv.degree == info.degree2 }">
 														<option value="${uv.degree }" selected="selected">${uv.degree }</option>
@@ -525,19 +487,19 @@
 
 
 									<div class="control-group">
-										<label class="control-label">联系电话</label>
+										<label class="control-label">联系电话<span style="color: red">*</span></label>
 										<div class="controls">
 											<input type="text" placeholder="xxx" name="phone" value="${info.phone }">
 										</div>
 									</div>
 									<div class="control-group">
-										<label class="control-label">E-mail</label>
+										<label class="control-label">E-mail<span style="color: red">*</span></label>
 										<div class="controls">
 											<input type="text" placeholder="xxx" name="email" value="${info.email }">
 										</div>
 									</div>
 									<div class="control-group">
-										<label class="control-label">现任职务</label>
+										<label class="control-label">现任职务<span style="color: red">*</span></label>
 										<div class="controls">
 											<select name="organization">
 												<option value="">选择职务所在单位(重要!)</option>
@@ -553,7 +515,7 @@
 										</div>
 									</div>
 									<div class="control-group">
-										<label class="control-label">简历</label>
+										<label class="control-label">简历<span style="color: red">*</span></label>
 										<div class="controls">
 											<textarea class="span10" rows="8" name="cv" id="cv">${info.cv }</textarea>
 										</div>
@@ -592,17 +554,12 @@
 													</td>
 													<td><select class="span3 year" name="family_born_year">
 															<option value="">请输入</option>
-															<c:forEach var="x" begin="1990" end="2020">
+															<c:forEach var="x" begin="1900" end="2020">
 																<option value="${x}">${x}</option>
 															</c:forEach>
 													</select> / <select class="span3 month" name="family_born_month">
 															<option value="">请输入</option>
 															<c:forEach var="x" begin="1" end="12">
-																<option value="${x}">${x}</option>
-															</c:forEach>
-													</select> / <select class="span3 day" name="family_born_day">
-															<option value="">请输入</option>
-															<c:forEach var="x" begin="1" end="31">
 																<option value="${x}">${x}</option>
 															</c:forEach>
 													</select>
@@ -625,9 +582,9 @@
 														</td>
 														<td><input type="text" placeholder="xxx" style="width: 80px" name="family_name" value="${uv.family_name }">
 														</td>
-														<td><select class="span3 year" name="family_born_year">
+														<td><select class="span4 year" name="family_born_year">
 																<option value="">请输入</option>
-																<c:forEach var="x" begin="1990" end="2020">
+																<c:forEach var="x" begin="1900" end="2020">
 																	<c:if test="${uv.family_born_year == x }">
 																		<option value="${x}" selected="selected">${x}</option>
 																	</c:if>
@@ -635,23 +592,13 @@
 																		<option value="${x}">${x}</option>
 																	</c:if>
 																</c:forEach>
-														</select> / <select class="span3 month" name="family_born_month">
+														</select> / <select class="span4 month" name="family_born_month">
 																<option value="">请输入</option>
 																<c:forEach var="x" begin="1" end="12">
 																	<c:if test="${uv.family_born_month == x }">
 																		<option value="${x}" selected="selected">${x}</option>
 																	</c:if>
 																	<c:if test="${uv.family_born_month != x }">
-																		<option value="${x}">${x}</option>
-																	</c:if>
-																</c:forEach>
-														</select> / <select class="span3 day" name="family_born_day">
-																<option value="">请输入</option>
-																<c:forEach var="x" begin="1" end="31">
-																	<c:if test="${uv.family_born_day == x }">
-																		<option value="${x}" selected="selected">${x}</option>
-																	</c:if>
-																	<c:if test="${uv.family_born_day != x }">
 																		<option value="${x}">${x}</option>
 																	</c:if>
 																</c:forEach>
@@ -715,7 +662,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
+						
 					</button>
 					<h4 class="modal-title">个人账户信息</h4>
 				</div>
@@ -732,6 +679,8 @@
 	</div>
 
 	<script src="../resource/BackstageCommon/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+	<script src="../resource/BackstageCommon/js/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="../resource/BackstageCommon/js/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
 	<script src="../resource/BackstageCommon/js/bootstrap.min.js" type="text/javascript"></script>
 	<!--[if lt IE 9]>
 <script src="../resource/BackstageCommon/js/excanvas.min.js"></script>
@@ -751,7 +700,7 @@
 		//固定head,sidebar,footer
 		setTimeout(function() {
 			$(".sidebar-option").trigger("change");
-		}, 500);
+		}, 10);
 
 		//家庭成员信息添加和删除
 		$("#family_first").siblings('tr').each(function() {
@@ -942,18 +891,8 @@
 				data : form_data,
 				dataType : 'text',
 				success : function(feedback) {
-					if (feedback == "time error") {
-						alert("请把表单填写完整");
-						return;
-					}
-					if(feedback == "time error0"){
-						alert("请填写入党时间");
-					}
-					if (feedback == "success") {
-						alert("报名数据保存成功");
-					} else {
-						alert(feedback);
-					}
+					var tip_info = decodeURIComponent(feedback.replace(/\+/g, '%20'));
+					alert(tip_info);
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
 					if (xhr.readyState == 0 || xhr.status == 0) {

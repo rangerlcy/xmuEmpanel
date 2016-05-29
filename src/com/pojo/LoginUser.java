@@ -15,6 +15,7 @@ public class LoginUser implements java.io.Serializable {
 	private String password;
 	private Integer roleId;
 	private Set users = new HashSet(0);
+	private Set studygroups = new HashSet(0);
 
 	// Constructors
 
@@ -30,11 +31,12 @@ public class LoginUser implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public LoginUser(String username, String password, Integer roleId, Set users) {
+	public LoginUser(String username, String password, Integer roleId, Set users, Set studygroups) {
 		this.username = username;
 		this.password = password;
 		this.roleId = roleId;
 		this.users = users;
+		this.studygroups = studygroups;
 	}
 
 	// Property accessors
@@ -69,6 +71,14 @@ public class LoginUser implements java.io.Serializable {
 
 	public void setUsers(Set users) {
 		this.users = users;
+	}
+
+	public Set getStudygroups() {
+		return this.studygroups;
+	}
+
+	public void setStudygroups(Set studygroups) {
+		this.studygroups = studygroups;
 	}
 
 }

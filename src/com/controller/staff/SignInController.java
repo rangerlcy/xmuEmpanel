@@ -26,7 +26,7 @@ public class SignInController {
 	EntryFormService entryformService;
 	
 	//教职工注册
-	@RequestMapping("sign_in.do")
+	@RequestMapping("/sign_in.do")
 	@ResponseBody
 	public String sign_in(Model model, HttpServletRequest request){
 		String username = request.getParameter("username");
@@ -61,7 +61,7 @@ public class SignInController {
 		
 		loginuser.setUsername(username);
 		loginuser.setPassword(password);
-		loginuser.setRoleId(3);		//角色3表示教职工
+		loginuser.setRoleId(5);		//角色5表示教职工
 		
 		user.setLoginUser(loginuser);
 		user.setEmail(email);

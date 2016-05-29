@@ -32,6 +32,8 @@ public class OrganizationService {
 		return list.get(0);
 	}
 	
+	
+	
 	public Organization queryOrganizationById(int id){
 		String hql = "from Organization o where o.id=?";
 		List<Organization> list = organizationDao.queryList(hql, new Object[]{id});

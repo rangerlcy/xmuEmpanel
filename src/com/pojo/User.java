@@ -13,7 +13,7 @@ public class User implements java.io.Serializable {
 
 	private Integer id;
 	private LoginUser loginUser;
-	private Short delFlag;
+	private Integer delFlag;
 	private String identifyNum;
 	private String email;
 	private Set entryforms = new HashSet(0);
@@ -32,8 +32,7 @@ public class User implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public User(LoginUser loginUser, Short delFlag, String identifyNum,
-			String email, Set entryforms) {
+	public User(LoginUser loginUser, Integer delFlag, String identifyNum, String email, Set entryforms) {
 		this.loginUser = loginUser;
 		this.delFlag = delFlag;
 		this.identifyNum = identifyNum;
@@ -59,11 +58,11 @@ public class User implements java.io.Serializable {
 		this.loginUser = loginUser;
 	}
 
-	public Short getDelFlag() {
+	public Integer getDelFlag() {
 		return this.delFlag;
 	}
 
-	public void setDelFlag(Short delFlag) {
+	public void setDelFlag(Integer delFlag) {
 		this.delFlag = delFlag;
 	}
 

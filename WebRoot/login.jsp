@@ -53,8 +53,8 @@
                         <div class="col-sm-6 col-sm-offset-3 form-box">
                         	<div class="form-top">
                         		<div class="form-top-left">
-                        			<h3>Login to our site</h3>
-                            		<p>Enter your username and password to log on:</p>
+                        			<h3>登陆</h3>
+                            		<p>组织部、考察组、报名人员使用各自的账户进行登陆</p>
                         		</div>
                         		<div class="form-top-right">
                         			<span class="fa fa-lock"></span>

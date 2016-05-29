@@ -47,6 +47,13 @@
 		<mapping resource="com/pojo/Ethnic.hbm.xml" />
 		<mapping resource="com/pojo/Education.hbm.xml" />
 		<mapping resource="com/pojo/PartyName.hbm.xml" />
+		<mapping resource="com/pojo/StudygroupPersonStore.hbm.xml" />
+		<mapping resource="com/pojo/MeetingrecommendState.hbm.xml" />
+		<mapping resource="com/pojo/StudygroupPerson.hbm.xml" />
+		<mapping resource="com/pojo/Talkrecommend.hbm.xml" />
+		<mapping resource="com/pojo/Studygroup.hbm.xml" />
+		<mapping resource="com/pojo/TalkrecommendState.hbm.xml" />
+		<mapping resource="com/pojo/Meetingrecommend.hbm.xml" />
 
 	</session-factory>
 

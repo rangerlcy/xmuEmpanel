@@ -16,7 +16,7 @@ public class EmpanelJob implements java.io.Serializable {
 	private Organization organization;
 	private String job;
 	private String level;
-	private Short amount;
+	private Integer amount;
 	private Set entryformJobs = new HashSet(0);
 
 	// Constructors
@@ -26,8 +26,7 @@ public class EmpanelJob implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public EmpanelJob(Empanel empanel, Organization organization, String job,
-			String level, Short amount) {
+	public EmpanelJob(Empanel empanel, Organization organization, String job, String level, Integer amount) {
 		this.empanel = empanel;
 		this.organization = organization;
 		this.job = job;
@@ -36,8 +35,7 @@ public class EmpanelJob implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public EmpanelJob(Empanel empanel, Organization organization, String job,
-			String level, Short amount, Set entryformJobs) {
+	public EmpanelJob(Empanel empanel, Organization organization, String job, String level, Integer amount, Set entryformJobs) {
 		this.empanel = empanel;
 		this.organization = organization;
 		this.job = job;
@@ -88,11 +86,11 @@ public class EmpanelJob implements java.io.Serializable {
 		this.level = level;
 	}
 
-	public Short getAmount() {
+	public Integer getAmount() {
 		return this.amount;
 	}
 
-	public void setAmount(Short amount) {
+	public void setAmount(Integer amount) {
 		this.amount = amount;
 	}
 

@@ -24,5 +24,11 @@
             </key>
             <one-to-many class="com.pojo.User" />
         </set>
+        <set name="studygroups" inverse="true">
+            <key>
+                <column name="username" length="50" not-null="true" />
+            </key>
+            <one-to-many class="com.pojo.Studygroup" />
+        </set>
     </class>
 </hibernate-mapping>

@@ -25,16 +25,20 @@
             </column>
         </property>
         <property name="startTime" type="java.lang.String">
-            <column name="start_time" length="200" />
+            <column name="start_time" length="200">
+                <comment>报名开始时间</comment>
+            </column>
         </property>
         <property name="endTime" type="java.lang.String">
-            <column name="end_time" length="200" />
+            <column name="end_time" length="200">
+                <comment>报名结束时间</comment>
+            </column>
         </property>
         <property name="plan" type="java.lang.String">
             <column name="plan" length="65535" />
         </property>
         <property name="avgMaxNum" type="java.lang.Integer">
-            <column name="avg_max_num" not-null="true">
+            <column name="avg_max_num">
                 <comment>每人最大可选岗位数量</comment>
             </column>
         </property>

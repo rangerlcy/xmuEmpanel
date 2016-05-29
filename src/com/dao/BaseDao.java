@@ -22,7 +22,7 @@ public class BaseDao<T> extends BaseHibernateDaoSupport {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<T> findForPage(final String hql,final Object[] args, final int currPage,final int pageSize)throws Exception{
+	public List<T> findForPage(final String hql,final Object[] args, final int currPage,final int pageSize){
 		List<T> result = getHibernateTemplate().executeFind(
 			new  HibernateCallback() {
 	           @Override
@@ -39,12 +39,6 @@ public class BaseDao<T> extends BaseHibernateDaoSupport {
 		return result;
 	}
 	
-    /**
-     * 执行hql删除、修改语�?
-     * @param hql
-     * @param values
-     * @return
-     */
     @SuppressWarnings("unchecked")
     public void executeUpdateQuery(final String hql, final Object[] args) {
         getHibernateTemplate().execute(new HibernateCallback() {
@@ -57,22 +51,11 @@ public class BaseDao<T> extends BaseHibernateDaoSupport {
             }
         });
     }
-    
-    /**
-     * 批量修改
-     * @param hql
-     * @param args
-     * @return 受影响行�?
-     */
+
     public int bulkUpdate(String hql, Object[] args) {
         return getHibernateTemplate().bulkUpdate(hql, args);
     }
  
-    /**
-     * 批量删除
-     * 
-     * @param collection 要删除的集合
-     */
     public void deleteAll(Collection<?> collection) {
     	getHibernateTemplate().deleteAll(collection);
     }
@@ -192,12 +175,6 @@ public class BaseDao<T> extends BaseHibernateDaoSupport {
         }
     }
  
-    /**
-     * 判断值是否为空�?
-     * 
-     * @param values
-     * @return
-     */
     public boolean isEmptyOrNull(Object[] values) {
         if (values == null || values.length == 0)
             return true;

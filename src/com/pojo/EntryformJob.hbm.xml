@@ -8,20 +8,20 @@
     <class name="com.pojo.EntryformJob" table="entryform_job" catalog="empanel">
         <id name="id" type="java.lang.Integer">
             <column name="id" />
-            <generator class="assigned" />
+            <generator class="identity" />
         </id>
-        <many-to-one name="entryform" class="com.pojo.Entryform" fetch="select">
+        <many-to-one name="entryform" class="com.pojo.Entryform" fetch="select" lazy="false">
             <column name="entry_form_id" not-null="true" />
         </many-to-one>
-        <many-to-one name="empanelJob" class="com.pojo.EmpanelJob" fetch="select">
+        <many-to-one name="empanelJob" class="com.pojo.EmpanelJob" fetch="select" lazy="false">
             <column name="job_id" not-null="true" />
         </many-to-one>
-        <property name="jobNum" type="java.lang.Short">
+        <property name="jobNum" type="java.lang.Integer">
             <column name="job_num" not-null="true">
-                <comment>第几志愿</comment>
+                <comment>第几志愿, -1表示不报名</comment>
             </column>
         </property>
-        <property name="isSelected" type="java.lang.Short">
+        <property name="isSelected" type="java.lang.Integer">
             <column name="is_selected" not-null="true" />
         </property>
     </class>

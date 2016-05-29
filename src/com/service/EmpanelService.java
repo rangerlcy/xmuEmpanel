@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.dao.BaseDao;
 import com.pojo.Empanel;
+import com.pojo.EmpanelJob;
 
 @Service
 public class EmpanelService {
@@ -18,6 +19,9 @@ public class EmpanelService {
 		return empanelDao.queryList("from Empanel e where e.isRealease=1 and e.delFlag=0", null);
 	}
 	
+	public List<Empanel> queryAllValidOrNoRelease(){
+		return empanelDao.queryList("from Empanel e where e.delFlag=0", null);
+	}
 	
 	public Empanel queryById(int id){
 		List<Empanel> empanels = empanelDao.queryList("from Empanel e where id=?", new Object[]{id});
@@ -25,5 +29,23 @@ public class EmpanelService {
 			return null;
 		}
 		return empanels.get(0);
+	}
+	
+	
+	//增
+	public void addOneEmpanel(Empanel empanel){
+		empanelDao.save(empanel);
+	}
+	
+	//更新
+	public void update(Empanel empanel) {
+		// TODO Auto-generated method stub
+		empanelDao.update(empanel);
+	}
+	
+	//根据id真删除
+	public void deleteById(int id) {
+		// TODO Auto-generated method stub
+		empanelDao.delete(Empanel.class, id);
 	}
 }

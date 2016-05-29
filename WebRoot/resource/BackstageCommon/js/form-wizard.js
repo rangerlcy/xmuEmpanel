@@ -263,6 +263,7 @@ var FormWizard = function () {
             
             $('#form_wizard_1 .button-submit').click(function () {
                 var data = $("#submit_form").serialize();
+                //alert(data);
                 $.ajax({
                 	url : 'sign_in.do',
     				type : 'post',

@@ -32,18 +32,15 @@ public class Empanel implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Empanel(String name, Integer avgMaxNum, Short isRealease,
-			Short delFlag) {
+	public Empanel(String name, Short isRealease, Short delFlag) {
 		this.name = name;
-		this.avgMaxNum = avgMaxNum;
 		this.isRealease = isRealease;
 		this.delFlag = delFlag;
 	}
 
 	/** full constructor */
-	public Empanel(String name, String status, String type, String flow,
-			String startTime, String endTime, String plan, Integer avgMaxNum,
-			Short isRealease, Short delFlag, Set entryforms, Set empanelJobs) {
+	public Empanel(String name, String status, String type, String flow, String startTime, String endTime, String plan, Integer avgMaxNum, Short isRealease, Short delFlag,
+			Set entryforms, Set empanelJobs) {
 		this.name = name;
 		this.status = status;
 		this.type = type;

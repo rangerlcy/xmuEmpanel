@@ -6,8 +6,6 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
-
-import com.pojo.RoleResource;
 import com.pojo.Sysrole;
 
 
@@ -16,9 +14,13 @@ import com.pojo.Sysrole;
  * @ClassName: LoginUserDetails
  * @Description: <br/>
  */
+
+//继承spring security的User类
 public class LoginUserDetails extends User {
 	private static final long serialVersionUID = 1L;
 
+	
+	//构造方法一
 	public LoginUserDetails(String username, String password, boolean enabled,
 			boolean accountNonExpired, boolean credentialsNonExpired,
 			boolean accountNonLocked,
@@ -28,10 +30,12 @@ public class LoginUserDetails extends User {
 				accountNonLocked, authorities);
 	}
 	
+	//构造方法二
 	public LoginUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username,password,authorities);
     }
 	
+	//重写父类方法一
 	@Override
     public boolean equals(Object o) {
         if (o instanceof LoginUserDetails) {
@@ -43,6 +47,7 @@ public class LoginUserDetails extends User {
     /**
      * Returns the hashcode of the {@code username}.
      */
+	//重写二
     @Override
     public int hashCode() {
         return getUsername().hashCode();
@@ -51,7 +56,6 @@ public class LoginUserDetails extends User {
 	
 	private com.pojo.LoginUser loginUser;
 	private List<Sysrole> roles;
-	private List<RoleResource> roleResource;
 	
 	public List<Sysrole> getRoles() {
 		return roles;
@@ -73,13 +77,5 @@ public class LoginUserDetails extends User {
 		this.loginUser = user;
 	}
 
-	public void setResources(List<RoleResource> resourceList) {
-		// TODO Auto-generated method stub
-		this.roleResource=resourceList;
-	}
-	
-	public List<RoleResource> getRoleResources(){
-		return roleResource;
-	}
 	
 }
