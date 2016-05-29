@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50622
 File Encoding         : 65001
 
-Date: 2016-05-02 15:59:24
+Date: 2016-05-29 11:46:16
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -142,23 +142,27 @@ DROP TABLE IF EXISTS `empanel`;
 CREATE TABLE `empanel` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
-  `status` varchar(200) DEFAULT NULL,
+  `status` varchar(200) DEFAULT NULL COMMENT '状态或流程',
   `type` varchar(200) DEFAULT NULL,
   `flow` varchar(200) DEFAULT NULL COMMENT '当前进行到的流程',
   `start_time` varchar(200) DEFAULT NULL COMMENT '报名开始时间',
   `end_time` varchar(200) DEFAULT NULL COMMENT '报名结束时间',
   `plan` text,
-  `avg_max_num` int(11) NOT NULL DEFAULT '1' COMMENT '每人最大可选岗位数量',
+  `avg_max_num` int(11) DEFAULT '1' COMMENT '每人最大可选岗位数量',
   `is_realease` tinyint(4) NOT NULL DEFAULT '0' COMMENT '选任工作是否发布',
   `del_flag` tinyint(4) NOT NULL DEFAULT '0' COMMENT '删除位，若为1则表示该选任工作已经过时无效，是历史选任工作',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of empanel
 -- ----------------------------
-INSERT INTO `empanel` VALUES ('1', '2016年1月科级选任', null, null, null, '2016-5-25', '2016-7-10', '选任计划。。。', '1', '1', '0');
-INSERT INTO `empanel` VALUES ('2', 'xxx年x月选任', null, null, null, '2020-1-1', '2020-2-2', '不知道写什么', '1', '1', '0');
+INSERT INTO `empanel` VALUES ('1', '2016年1月科级选任', '科级1', '科级选任', '报名阶段', '2016-5-25', '2016-7-10', '选任计划。。。', '1', '1', '0');
+INSERT INTO `empanel` VALUES ('2', 'xxx年x月选任', '科级2', '科级选任', '报名阶段', '2016-3-3', '2016-4-2', '不知道写什么', '1', '1', '0');
+INSERT INTO `empanel` VALUES ('3', '2020年8月选', '中层1', '中层选任', '报名阶段', '2016-2-1', '2016-2-3', '计划！！！', '1', '1', '0');
+INSERT INTO `empanel` VALUES ('4', '2016年暑假选任', '科级1', '科级选任', '报名阶段', '2016-5-21', '2016-9-1', '计划拟任xxx。。', '1', '1', '0');
+INSERT INTO `empanel` VALUES ('5', '2016.5系级选任', '系级选任流程2016', '系级选任', '报名阶段', '2016-5-10', '2016-6-19', '这次拟选任5人系级干部', '2', '1', '0');
+INSERT INTO `empanel` VALUES ('6', '一些院系系级选任', '系级选任流程2016', '科级选任', '未发布', '2016-9-18', '2016-10-18', '', '0', '0', '0');
 
 -- ----------------------------
 -- Table structure for `empanel_job`
@@ -170,13 +174,13 @@ CREATE TABLE `empanel_job` (
   `job` varchar(255) NOT NULL,
   `level` varchar(255) NOT NULL,
   `empanel_id` int(11) unsigned NOT NULL,
-  `amount` tinyint(4) NOT NULL,
+  `amount` int(10) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `organization_id` (`organization_id`),
   KEY `empanel_id` (`empanel_id`),
   CONSTRAINT `empanel_job_ibfk_1` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`),
   CONSTRAINT `empanel_job_ibfk_2` FOREIGN KEY (`empanel_id`) REFERENCES `empanel` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of empanel_job
@@ -185,6 +189,10 @@ INSERT INTO `empanel_job` VALUES ('1', '1', '院长', '正处级', '1', '1');
 INSERT INTO `empanel_job` VALUES ('2', '2', '实验室主任', '正科级', '1', '5');
 INSERT INTO `empanel_job` VALUES ('3', '3', '办公室秘书', '副科级', '1', '2');
 INSERT INTO `empanel_job` VALUES ('4', '2', '院长', '处级', '2', '1');
+INSERT INTO `empanel_job` VALUES ('5', '1', '科长', '主席', '3', '1');
+INSERT INTO `empanel_job` VALUES ('8', '3', '人文办公室主任', '科级', '4', '10');
+INSERT INTO `empanel_job` VALUES ('9', '1', '计算机系实验室主任', '科级', '5', '2');
+INSERT INTO `empanel_job` VALUES ('10', '1', '自动化系办公室助理', '聘任', '5', '3');
 
 -- ----------------------------
 -- Table structure for `empanel__studygroup`
@@ -200,7 +208,7 @@ CREATE TABLE `empanel__studygroup` (
   KEY `organization_id` (`organization_id`),
   CONSTRAINT `empanel__studygroup_ibfk_1` FOREIGN KEY (`study_group_id`) REFERENCES `studygroup` (`id`),
   CONSTRAINT `empanel__studygroup_ibfk_2` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='只有临时考察组才有，组织部分配选任工作';
 
 -- ----------------------------
 -- Records of empanel__studygroup
@@ -248,14 +256,23 @@ CREATE TABLE `entryform` (
   CONSTRAINT `entryform_ibfk_1` FOREIGN KEY (`empanel_id`) REFERENCES `empanel` (`id`),
   CONSTRAINT `entryform_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `entryform_ibfk_3` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of entryform
 -- ----------------------------
-INSERT INTO `entryform` VALUES ('7', 'admin', '男', '1992-4-5', '景颇族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-05-02 15-36-25-031.jpg', '2008-6-19', '2007-3-18', '2007-7-18', 'asdqwwe', 'czczxw2', '中专', '出版硕士', 'xx21s', '研究生', '农学硕士', 'cds32fdscv', '18850010090', '12345678@163.com', '1', 'asdsqe21s', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zzxasd', 'qwe123as', null, null, '7', '中共');
-INSERT INTO `entryform` VALUES ('27', 'admin', '男', '1992-4-5', '景颇族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-05-02 01-30-47-990.jpg', '2008-6-19', '2007-3-18', '2007-7-18', 'asdqwwe', 'czczxw2', '中专', '出版硕士', 'xx21s', '研究生', '农学硕士', 'cds32fdscv', '18850010090', '12345678@163.com', '2', 'asdsqe21s', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zzxasd', 'qwe123as', null, '1', '7', '民建');
-INSERT INTO `entryform` VALUES ('28', 'admin', '男', '1992-4-5', '景颇族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-05-02 15-36-25-031.jpg', '2008-6-19', '2007-3-18', '2007-7-18', 'asdqwwe', 'czczxw2', '中专', '出版硕士', 'xx21s', '研究生', '农学硕士', 'cds32fdscv', '18850010090', '12345678@163.com', '1', 'asdsqe21s', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zzxasd', 'qwe123as', null, '2', '7', '中共');
+INSERT INTO `entryform` VALUES ('7', 'admin', '男', '1992.4', '景颇族', '广东省-广东市-广县', '湖南省-长沙市-沙县', '/empanel/staff_photo/photo-2016-05-23 23-17-48-096.jpg', '2008.6', '2007.3', '2007.7', 'asdqwwe', 'czczxw2', '中专', '出版硕士', 'xx21s', '研究生', '农学硕士', 'cds32fdscv', '18850010090', '12345678@163.com', '1', 'asdsqe21s', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zzxasd', 'qwe123as', null, null, '7', '中共');
+INSERT INTO `entryform` VALUES ('32', 'admin', '男', '1992.4', '景颇族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-05-21 16-09-34-419.jpg', '2008.6', '2007.3', '2007.7', 'asdqwwe', 'czczxw2', '中专', '出版硕士', 'xx21s', '研究生', '农学硕士', 'cds32fdscv', '18850010090', '12345678@163.com', '2', 'asdsqe21s', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zzxasd', 'qwe123as', null, '2', '7', '中共');
+INSERT INTO `entryform` VALUES ('35', 'admin', '男', '1992.4', '景颇族', '广东省-广东市-广县', '湖南省-长沙市-沙县', '/empanel/staff_photo/photo-2016-05-21 16-09-34-419.jpg', '2008.6', '2007.3', '2007.7', 'asdqwwe', 'czczxw2', '中专', '出版硕士', 'xx21s', '研究生', '农学硕士', 'cds32fdscv', '18850010090', '12345678@163.com', '2', 'asdsqe21s', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zzxasd', 'qwe123as', null, '1', '7', '中共');
+INSERT INTO `entryform` VALUES ('41', 'admin', '男', '1992.4', '景颇族', '广东省-广东市-广县', '湖南省-长沙市-沙县', '/empanel/staff_photo/photo-2016-05-23 23-17-48-096.jpg', '2008.6', '2007.3', '2007.7', 'asdqwwe', 'czczxw2', '中专', '出版硕士', 'xx21s', '研究生', '农学硕士', 'cds32fdscv', '18850010090', '12345678@163.com', '1', 'asdsqe21s', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zzxasd', 'qwe123as', null, '3', '7', '中共');
+INSERT INTO `entryform` VALUES ('42', '教师1', '男', '2005.5', '仫佬族', '湖南省-长沙市-沙县', '广东省-广东市-广县', '/empanel/staff_photo/photo-2016-05-24 12-06-47-992.jpg', '2004.12', '2007.7', '2007.8', '专业', '特长', '本科', '农学博士', '阿斯顿', '本科', '农学硕士', '自行车', '12121212', '10@1.c', '1', '权威', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zds', 'qwe', null, null, '13', '农工');
+INSERT INTO `entryform` VALUES ('43', '教师1', '男', '1993.4', '仫佬族', '湖南省-长沙市-沙县', '广东省-广东市-广县', '/empanel/staff_photo/photo-2016-05-24 12-06-47-992.jpg', '1993.6', '1996.7', '1995.4', '专业', '特长', '本科', '农学博士', '阿斯顿', '本科', '农学硕士', '自行车', '12121212', '10@1.c', '1', '权威', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zds', 'qwe', null, '1', '13', '农工');
+INSERT INTO `entryform` VALUES ('44', '教师1', '男', '1993.4', '仫佬族', '湖南省-长沙市-沙县', '广东省-广东市-广县', '/empanel/staff_photo/photo-2016-05-24 12-06-47-992.jpg', '1993.6', '1996.7', '1995.4', '专业', '特长', '本科', '农学博士', '阿斯顿', '本科', '农学硕士', '自行车', '12121212', '10@1.c', '1', '权威', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zds', 'qwe', null, '3', '13', '农工');
+INSERT INTO `entryform` VALUES ('45', '教职工1', '男', '2003.6', '汉族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-05-24 22-18-12-010.jpg', '2006.6', '2007.6', '2007.10', '专业技术', '专业特长', '专科', '兽医博士', 'q2ax', '', '', '', '909090', '90908@q.c', '1', 'qwe', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', '', '', null, null, '14', '民盟');
+INSERT INTO `entryform` VALUES ('46', '教职工1', '男', '2003.6', '汉族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-05-24 22-18-12-010.jpg', '2006.6', '2007.6', '2007.10', '专业技术', '专业特长', '专科', '兽医博士', 'q2ax', '', '', '', '909090', '90908@q.c', '1', 'qwe', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', '', '', null, '1', '14', '民盟');
+INSERT INTO `entryform` VALUES ('47', '教职工1', '男', '2003.6', '汉族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-05-24 22-18-12-010.jpg', '2006.6', '2007.6', '2007.10', '专业技术', '专业特长', '专科', '兽医博士', 'q2ax', '', '', '', '909090', '90908@q.c', '1', 'qwe', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', '', '', null, '2', '14', '民盟');
+INSERT INTO `entryform` VALUES ('48', '教师1', '男', '1993.4', '仫佬族', '湖南省-长沙市-沙县', '广东省-广东市-广县', '/empanel/staff_photo/photo-2016-05-24 12-06-47-992.jpg', '1993.6', '1996.7', '1995.4', '专业', '特长', '本科', '农学博士', '阿斯顿', '本科', '农学硕士', '自行车', '12121212', '10@1.c', '1', '权威', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zds', 'qwe', null, '2', '13', '农工');
+INSERT INTO `entryform` VALUES ('49', '职工2', '男', null, '彝族', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '897@w.s', null, null, null, null, null, null, null, '15', null);
 
 -- ----------------------------
 -- Table structure for `entryform_family`
@@ -272,35 +289,50 @@ CREATE TABLE `entryform_family` (
   PRIMARY KEY (`id`),
   KEY `entry_form_id` (`entry_form_id`),
   CONSTRAINT `entryform_family_ibfk_1` FOREIGN KEY (`entry_form_id`) REFERENCES `entryform` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of entryform_family
 -- ----------------------------
-INSERT INTO `entryform_family` VALUES ('64', 'sas', 'wqe1', '2008-12-', '中共', 'dsf4hgf', '27');
-INSERT INTO `entryform_family` VALUES ('66', '天空', 'wqe1', '2008-12-', '中共', 'dsf4hgf', '7');
-INSERT INTO `entryform_family` VALUES ('67', '天空', 'wqe1', '2008-12-', '中共', 'dsf4hgf', '28');
+INSERT INTO `entryform_family` VALUES ('79', '天空', 'wqe1', '2008.12', '中共', 'dsf4hgf', '32');
+INSERT INTO `entryform_family` VALUES ('86', '天空', 'wqe1', '2008.12', '中共', 'dsf4hgf', '35');
+INSERT INTO `entryform_family` VALUES ('88', '天空', 'wqe1', '2008.12', '中共', 'dsf4hgf', '7');
+INSERT INTO `entryform_family` VALUES ('89', '天空', 'wqe1', '2008.12', '中共', 'dsf4hgf', '41');
 
 -- ----------------------------
 -- Table structure for `entryform_job`
 -- ----------------------------
 DROP TABLE IF EXISTS `entryform_job`;
 CREATE TABLE `entryform_job` (
-  `id` int(11) unsigned NOT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `entry_form_id` int(10) unsigned NOT NULL,
   `job_id` int(11) unsigned NOT NULL,
-  `job_num` tinyint(4) NOT NULL COMMENT '第几志愿',
-  `is_selected` tinyint(4) NOT NULL DEFAULT '0',
+  `job_num` int(4) NOT NULL COMMENT '第几志愿, -1表示不报名',
+  `is_selected` int(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `entry_form_id` (`entry_form_id`),
   KEY `job_id` (`job_id`),
   CONSTRAINT `entryform_job_ibfk_1` FOREIGN KEY (`entry_form_id`) REFERENCES `entryform` (`id`),
   CONSTRAINT `entryform_job_ibfk_2` FOREIGN KEY (`job_id`) REFERENCES `empanel_job` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of entryform_job
 -- ----------------------------
+INSERT INTO `entryform_job` VALUES ('5', '32', '4', '1', '0');
+INSERT INTO `entryform_job` VALUES ('6', '35', '1', '2', '0');
+INSERT INTO `entryform_job` VALUES ('7', '35', '2', '1', '0');
+INSERT INTO `entryform_job` VALUES ('8', '35', '3', '3', '0');
+INSERT INTO `entryform_job` VALUES ('9', '41', '5', '1', '0');
+INSERT INTO `entryform_job` VALUES ('10', '43', '1', '1', '0');
+INSERT INTO `entryform_job` VALUES ('11', '43', '2', '2', '0');
+INSERT INTO `entryform_job` VALUES ('12', '43', '3', '3', '0');
+INSERT INTO `entryform_job` VALUES ('13', '44', '5', '1', '0');
+INSERT INTO `entryform_job` VALUES ('14', '46', '1', '1', '0');
+INSERT INTO `entryform_job` VALUES ('15', '46', '2', '2', '0');
+INSERT INTO `entryform_job` VALUES ('16', '46', '3', '3', '0');
+INSERT INTO `entryform_job` VALUES ('17', '47', '4', '1', '0');
+INSERT INTO `entryform_job` VALUES ('18', '48', '4', '1', '0');
 
 -- ----------------------------
 -- Table structure for `entryform_relativemerits`
@@ -309,7 +341,7 @@ DROP TABLE IF EXISTS `entryform_relativemerits`;
 CREATE TABLE `entryform_relativemerits` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `entry_form_id` int(10) unsigned NOT NULL,
-  `type` tinyint(4) NOT NULL COMMENT '优点还是缺点',
+  `type` int(4) NOT NULL COMMENT '优点还是缺点',
   `content` text,
   PRIMARY KEY (`id`),
   KEY `entry_form_id` (`entry_form_id`),
@@ -404,8 +436,59 @@ CREATE TABLE `login_user` (
 -- ----------------------------
 -- Records of login_user
 -- ----------------------------
-INSERT INTO `login_user` VALUES ('admin123', '111111', '3');
-INSERT INTO `login_user` VALUES ('cadre', 'cadre', '1');
+INSERT INTO `login_user` VALUES ('admin', 'admin', '1');
+INSERT INTO `login_user` VALUES ('admin123', '111111', '5');
+INSERT INTO `login_user` VALUES ('org', '111111', '2');
+INSERT INTO `login_user` VALUES ('staff1', '111111', '5');
+INSERT INTO `login_user` VALUES ('staff2', '111111', '5');
+INSERT INTO `login_user` VALUES ('study', '111111', '3');
+INSERT INTO `login_user` VALUES ('study2', '111111', '3');
+INSERT INTO `login_user` VALUES ('study3', '111111', '3');
+INSERT INTO `login_user` VALUES ('teacher1', '111111', '5');
+INSERT INTO `login_user` VALUES ('tempstudy', '111111', '4');
+
+-- ----------------------------
+-- Table structure for `meetingrecommend`
+-- ----------------------------
+DROP TABLE IF EXISTS `meetingrecommend`;
+CREATE TABLE `meetingrecommend` (
+  `id` int(10) unsigned NOT NULL COMMENT '会议推荐表',
+  `allocate_id` int(10) unsigned DEFAULT NULL COMMENT '分配任务',
+  PRIMARY KEY (`id`),
+  KEY `allocate_id` (`allocate_id`),
+  CONSTRAINT `meetingrecommend_ibfk_1` FOREIGN KEY (`allocate_id`) REFERENCES `empanel__studygroup` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of meetingrecommend
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `meetingrecommend_state`
+-- ----------------------------
+DROP TABLE IF EXISTS `meetingrecommend_state`;
+CREATE TABLE `meetingrecommend_state` (
+  `id` int(11) NOT NULL,
+  `entry_form_id` int(10) unsigned NOT NULL,
+  `meeting_recommend_id` int(10) unsigned NOT NULL,
+  `total` int(4) NOT NULL,
+  `morality` int(4) NOT NULL,
+  `writting` int(4) NOT NULL,
+  `unit` int(4) NOT NULL,
+  `fair` int(4) NOT NULL,
+  `honest` int(4) NOT NULL,
+  `performance` int(4) NOT NULL,
+  `recommend` int(4) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `entry_form_id` (`entry_form_id`),
+  KEY `meeting_recommend_id` (`meeting_recommend_id`),
+  CONSTRAINT `meetingrecommend_state_ibfk_1` FOREIGN KEY (`entry_form_id`) REFERENCES `entryform` (`id`),
+  CONSTRAINT `meetingrecommend_state_ibfk_2` FOREIGN KEY (`meeting_recommend_id`) REFERENCES `meetingrecommend` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of meetingrecommend_state
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `organization`
@@ -414,9 +497,9 @@ DROP TABLE IF EXISTS `organization`;
 CREATE TABLE `organization` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `del_flag` tinyint(4) NOT NULL DEFAULT '0',
+  `del_flag` int(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of organization
@@ -424,6 +507,7 @@ CREATE TABLE `organization` (
 INSERT INTO `organization` VALUES ('1', '信息科学与技术学院', '0');
 INSERT INTO `organization` VALUES ('2', '经济学院', '0');
 INSERT INTO `organization` VALUES ('3', '人文学院', '0');
+INSERT INTO `organization` VALUES ('4', '海洋学院', '0');
 
 -- ----------------------------
 -- Table structure for `party_name`
@@ -508,18 +592,96 @@ INSERT INTO `place_town` VALUES ('2', '厦县', '2');
 INSERT INTO `place_town` VALUES ('3', '广县', '3');
 
 -- ----------------------------
--- Table structure for `role_resource`
+-- Table structure for `studygroup`
 -- ----------------------------
-DROP TABLE IF EXISTS `role_resource`;
-CREATE TABLE `role_resource` (
-  `roleId` int(10) NOT NULL,
-  `resourceUrl` varchar(200) NOT NULL,
-  PRIMARY KEY (`roleId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS `studygroup`;
+CREATE TABLE `studygroup` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `username` varchar(50) DEFAULT NULL,
+  `is_temp` int(4) NOT NULL,
+  `del_flag` int(4) NOT NULL DEFAULT '0',
+  `organization_id` int(10) DEFAULT NULL COMMENT '考察组所属单位，临时考察组没有',
+  PRIMARY KEY (`id`),
+  KEY `FK_USERNAME` (`username`),
+  CONSTRAINT `FK_USERNAME` FOREIGN KEY (`username`) REFERENCES `login_user` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of role_resource
+-- Records of studygroup
 -- ----------------------------
+INSERT INTO `studygroup` VALUES ('1', '测试考察组', 'study', '0', '0', '1');
+INSERT INTO `studygroup` VALUES ('2', '测试考察组2', 'study2', '0', '0', '2');
+INSERT INTO `studygroup` VALUES ('5', '赖子强的考察组', 'study3', '0', '0', '4');
+
+-- ----------------------------
+-- Table structure for `studygroup_person`
+-- ----------------------------
+DROP TABLE IF EXISTS `studygroup_person`;
+CREATE TABLE `studygroup_person` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `study_group_id` int(10) unsigned NOT NULL,
+  `study_group_person_store_id` int(10) unsigned NOT NULL,
+  `type` varchar(200) NOT NULL COMMENT '这个人是组长、组员、联络员之一',
+  PRIMARY KEY (`id`),
+  KEY `study_group_id` (`study_group_id`),
+  KEY `study_group_person_store` (`study_group_person_store_id`),
+  CONSTRAINT `studygroup_person_ibfk_1` FOREIGN KEY (`study_group_id`) REFERENCES `studygroup` (`id`),
+  CONSTRAINT `studygroup_person_ibfk_2` FOREIGN KEY (`study_group_person_store_id`) REFERENCES `studygroup_person_store` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of studygroup_person
+-- ----------------------------
+INSERT INTO `studygroup_person` VALUES ('1', '1', '1', '联络员');
+INSERT INTO `studygroup_person` VALUES ('2', '1', '2', '组长');
+INSERT INTO `studygroup_person` VALUES ('3', '1', '3', '组员');
+INSERT INTO `studygroup_person` VALUES ('4', '2', '4', '组长');
+INSERT INTO `studygroup_person` VALUES ('5', '2', '5', '联络员');
+INSERT INTO `studygroup_person` VALUES ('6', '2', '6', '组员');
+INSERT INTO `studygroup_person` VALUES ('7', '2', '7', '组员');
+INSERT INTO `studygroup_person` VALUES ('8', '2', '8', '组员');
+INSERT INTO `studygroup_person` VALUES ('18', '5', '18', '组长');
+INSERT INTO `studygroup_person` VALUES ('19', '5', '19', '联络员');
+INSERT INTO `studygroup_person` VALUES ('20', '5', '20', '组员');
+INSERT INTO `studygroup_person` VALUES ('21', '5', '21', '组员');
+INSERT INTO `studygroup_person` VALUES ('22', '5', '22', '组员');
+
+-- ----------------------------
+-- Table structure for `studygroup_person_store`
+-- ----------------------------
+DROP TABLE IF EXISTS `studygroup_person_store`;
+CREATE TABLE `studygroup_person_store` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `sex` varchar(200) DEFAULT NULL,
+  `job` varchar(255) DEFAULT NULL,
+  `level` varchar(255) DEFAULT NULL,
+  `tel` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `pre_unit` varchar(255) DEFAULT NULL,
+  `remark` varchar(255) DEFAULT NULL,
+  `is_liaison` int(4) NOT NULL,
+  `is_temp` int(4) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of studygroup_person_store
+-- ----------------------------
+INSERT INTO `studygroup_person_store` VALUES ('1', '张三', '男', null, null, '1234567', '123@163.com', null, null, '1', '0');
+INSERT INTO `studygroup_person_store` VALUES ('2', '李四', '男', null, null, '88888', '1@1.com', null, null, '0', '0');
+INSERT INTO `studygroup_person_store` VALUES ('3', '王五', '女', null, null, '10000', '1@a.com', null, null, '0', '0');
+INSERT INTO `studygroup_person_store` VALUES ('4', '赖子强', null, null, null, null, null, null, null, '0', '0');
+INSERT INTO `studygroup_person_store` VALUES ('5', 'jjk', null, null, null, '18810010001', 'jjk@qq.com', null, null, '1', '0');
+INSERT INTO `studygroup_person_store` VALUES ('6', 'jjk1', null, null, null, null, null, null, null, '0', '0');
+INSERT INTO `studygroup_person_store` VALUES ('7', 'jjk2', null, null, null, null, null, null, null, '0', '0');
+INSERT INTO `studygroup_person_store` VALUES ('8', 'jjk3', null, null, null, null, null, null, null, '0', '0');
+INSERT INTO `studygroup_person_store` VALUES ('18', '赖子强', null, null, null, null, null, null, null, '0', '0');
+INSERT INTO `studygroup_person_store` VALUES ('19', '赖', null, null, null, '110', 'lzq@qq.com', null, null, '1', '0');
+INSERT INTO `studygroup_person_store` VALUES ('20', '赖1', null, null, null, null, null, null, null, '0', '0');
+INSERT INTO `studygroup_person_store` VALUES ('21', '赖2', null, null, null, null, null, null, null, '0', '0');
+INSERT INTO `studygroup_person_store` VALUES ('22', '赖3', null, null, null, null, null, null, null, '0', '0');
 
 -- ----------------------------
 -- Table structure for `sysrole`
@@ -535,9 +697,43 @@ CREATE TABLE `sysrole` (
 -- ----------------------------
 -- Records of sysrole
 -- ----------------------------
-INSERT INTO `sysrole` VALUES ('1', 'cadre', '组织部');
-INSERT INTO `sysrole` VALUES ('2', 'checkgp', '考察组');
-INSERT INTO `sysrole` VALUES ('3', 'staff', '普通员工');
+INSERT INTO `sysrole` VALUES ('1', 'admin', '管理员');
+INSERT INTO `sysrole` VALUES ('2', 'cadre', '组织部');
+INSERT INTO `sysrole` VALUES ('3', 'PSG', '常设考察组');
+INSERT INTO `sysrole` VALUES ('4', 'TSG', '临时考察组');
+INSERT INTO `sysrole` VALUES ('5', 'staff', '普通员工');
+
+-- ----------------------------
+-- Table structure for `talkrecommend`
+-- ----------------------------
+DROP TABLE IF EXISTS `talkrecommend`;
+CREATE TABLE `talkrecommend` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL COMMENT '谈话对象',
+  `job` varchar(255) NOT NULL COMMENT '所在单位及职务、职称',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of talkrecommend
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `talkrecommend_state`
+-- ----------------------------
+DROP TABLE IF EXISTS `talkrecommend_state`;
+CREATE TABLE `talkrecommend_state` (
+  `id` int(10) unsigned NOT NULL,
+  `entry_form_id` int(10) unsigned NOT NULL,
+  `vote` int(4) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `entry_form_id` (`entry_form_id`),
+  CONSTRAINT `talkrecommend_state_ibfk_1` FOREIGN KEY (`entry_form_id`) REFERENCES `entryform` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of talkrecommend_state
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `user`
@@ -545,16 +741,19 @@ INSERT INTO `sysrole` VALUES ('3', 'staff', '普通员工');
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `del_flag` tinyint(4) DEFAULT '0',
+  `del_flag` int(4) DEFAULT '0',
   `login_username` varchar(200) NOT NULL COMMENT '关联到登陆表',
   `identify_num` varchar(200) NOT NULL COMMENT '身份证号码',
   `email` varchar(200) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `login_pk` (`login_username`),
   CONSTRAINT `login_pk` FOREIGN KEY (`login_username`) REFERENCES `login_user` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
 INSERT INTO `user` VALUES ('7', null, 'admin123', '1234561111111111', '12345678@163.com');
+INSERT INTO `user` VALUES ('13', null, 'teacher1', '1010101010101011', '10@1.c');
+INSERT INTO `user` VALUES ('14', null, 'staff1', '9010212121212121', '90908@q.c');
+INSERT INTO `user` VALUES ('15', null, 'staff2', '1020102012012121', '897@w.s');
