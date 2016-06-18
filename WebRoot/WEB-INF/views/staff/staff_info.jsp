@@ -515,6 +515,39 @@
 										</div>
 									</div>
 									<div class="control-group">
+										<label class="control-label">任职时间<span style="color: red">*</span></label>
+										<div class="controls">
+											<input type="text" name="presently_job_time" placeholder="格式比如  2012.3" value="${info.presently_job_time }">
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label">职务级别<span style="color: red">*</span></label>
+										<div class="controls">
+											<select name="presently_level">
+												<option value="">请选择级别</option>
+												<option value="副部级" <c:if test="${info.presently_level=='副部级' }">selected</c:if>>副部级</option>
+												<option value="正厅级" <c:if test="${info.presently_level=='正厅级' }">selected</c:if>>正厅级</option>
+												<option value="副厅级" <c:if test="${info.presently_level=='副厅级' }">selected</c:if>>副厅级</option>
+												<option value="正处级" <c:if test="${info.presently_level=='正处级' }">selected</c:if>>正处级</option>
+												<option value="副厅级" <c:if test="${info.presently_level=='副厅级' }">selected</c:if>>副厅级</option>
+												<option value="副处级" <c:if test="${info.presently_level=='副处级' }">selected</c:if>>副处级</option>
+												<option value="正科级/副处级" <c:if test="${info.presently_level=='正科级/副处级' }">selected</c:if>>正科级/副处级</option>
+												<option value="正科级" <c:if test="${info.presently_level=='正科级' }">selected</c:if>>正科级</option>
+												<option value="科级" <c:if test="${info.presently_level=='科级' }">selected</c:if>>科级</option>
+												<option value="系级、副处级" <c:if test="${info.presently_level=='系级、副处级' }">selected</c:if>>系级、副处级</option>
+												<option value="聘任" <c:if test="${info.presently_level=='聘任' }">selected</c:if>>聘任</option>
+												<option value="无 " <c:if test="${info.presently_level=='无' }">selected</c:if>>无</option>
+												<option value="兼" <c:if test="${info.presently_level=='兼' }">selected</c:if>>兼</option>
+											</select>			
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label">级别时间<span style="color: red">*</span></label>
+										<div class="controls">
+											<input type="text" name="presently_level_time" placeholder="格式比如  2012.3" value="${info.presently_level_time }">
+										</div>
+									</div>
+									<div class="control-group">
 										<label class="control-label">简历<span style="color: red">*</span></label>
 										<div class="controls">
 											<textarea class="span10" rows="8" name="cv" id="cv">${info.cv }</textarea>

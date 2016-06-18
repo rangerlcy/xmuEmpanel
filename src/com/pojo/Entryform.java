@@ -8,12 +8,12 @@ import java.util.Set;
  * Entryform entity. @author MyEclipse Persistence Tools
  */
 
-public class Entryform implements java.io.Serializable, Cloneable {
+public class Entryform implements java.io.Serializable,Cloneable {
 
 	// Fields
 	//人为加一个，报名表对应所报岗位属性
 	private List<EntryformJob> jobList;
-	
+		
 	private Integer id;
 	private User user;
 	private Empanel empanel;
@@ -44,10 +44,13 @@ public class Entryform implements java.io.Serializable, Cloneable {
 	private String appraisalResult;
 	private String appointDismissReason;
 	private String partyName;
+	private String presentlyLevel;
+	private String presentlyJobTime;
+	private String presentlyLevelTime;
 	private Set meetingrecommendStates = new HashSet(0);
+	private Set talkrecommendStates = new HashSet(0);
 	private Set entryformJobs = new HashSet(0);
 	private Set entryformFamilies = new HashSet(0);
-	private Set talkrecommendStates = new HashSet(0);
 	private Set entryformRelativemeritses = new HashSet(0);
 
 	// Constructors
@@ -71,7 +74,6 @@ public class Entryform implements java.io.Serializable, Cloneable {
 		entryformRelativemeritses = null;
 	}
 	
-	
 	/** default constructor */
 	public Entryform() {
 	}
@@ -81,7 +83,8 @@ public class Entryform implements java.io.Serializable, Cloneable {
 			String picUrl, String joinPartyTime, String workTime, String collegeTime, String specialJob, String specialSkill, String fullTimeEducationRecord,
 			String fullTimeEducationLevel, String fullTimeEducationCollege, String incumbencyEducationRecord, String incumbencyEducationLevel, String incumbencyEducationCollege,
 			String tel, String email, String presentlyJob, String resume, String punishReward, String appraisalResult, String appointDismissReason, String partyName,
-			Set meetingrecommendStates, Set entryformJobs, Set entryformFamilies, Set talkrecommendStates, Set entryformRelativemeritses) {
+			String presentlyLevel, String presentlyJobTime, String presentlyLevelTime, Set meetingrecommendStates, Set talkrecommendStates, Set entryformJobs,
+			Set entryformFamilies, Set entryformRelativemeritses) {
 		this.user = user;
 		this.empanel = empanel;
 		this.organization = organization;
@@ -111,10 +114,13 @@ public class Entryform implements java.io.Serializable, Cloneable {
 		this.appraisalResult = appraisalResult;
 		this.appointDismissReason = appointDismissReason;
 		this.partyName = partyName;
+		this.presentlyLevel = presentlyLevel;
+		this.presentlyJobTime = presentlyJobTime;
+		this.presentlyLevelTime = presentlyLevelTime;
 		this.meetingrecommendStates = meetingrecommendStates;
+		this.talkrecommendStates = talkrecommendStates;
 		this.entryformJobs = entryformJobs;
 		this.entryformFamilies = entryformFamilies;
-		this.talkrecommendStates = talkrecommendStates;
 		this.entryformRelativemeritses = entryformRelativemeritses;
 	}
 
@@ -360,12 +366,44 @@ public class Entryform implements java.io.Serializable, Cloneable {
 		this.partyName = partyName;
 	}
 
+	public String getPresentlyLevel() {
+		return this.presentlyLevel;
+	}
+
+	public void setPresentlyLevel(String presentlyLevel) {
+		this.presentlyLevel = presentlyLevel;
+	}
+
+	public String getPresentlyJobTime() {
+		return this.presentlyJobTime;
+	}
+
+	public void setPresentlyJobTime(String presentlyJobTime) {
+		this.presentlyJobTime = presentlyJobTime;
+	}
+
+	public String getPresentlyLevelTime() {
+		return this.presentlyLevelTime;
+	}
+
+	public void setPresentlyLevelTime(String presentlyLevelTime) {
+		this.presentlyLevelTime = presentlyLevelTime;
+	}
+
 	public Set getMeetingrecommendStates() {
 		return this.meetingrecommendStates;
 	}
 
 	public void setMeetingrecommendStates(Set meetingrecommendStates) {
 		this.meetingrecommendStates = meetingrecommendStates;
+	}
+
+	public Set getTalkrecommendStates() {
+		return this.talkrecommendStates;
+	}
+
+	public void setTalkrecommendStates(Set talkrecommendStates) {
+		this.talkrecommendStates = talkrecommendStates;
 	}
 
 	public Set getEntryformJobs() {
@@ -384,14 +422,6 @@ public class Entryform implements java.io.Serializable, Cloneable {
 		this.entryformFamilies = entryformFamilies;
 	}
 
-	public Set getTalkrecommendStates() {
-		return this.talkrecommendStates;
-	}
-
-	public void setTalkrecommendStates(Set talkrecommendStates) {
-		this.talkrecommendStates = talkrecommendStates;
-	}
-
 	public Set getEntryformRelativemeritses() {
 		return this.entryformRelativemeritses;
 	}
@@ -399,7 +429,7 @@ public class Entryform implements java.io.Serializable, Cloneable {
 	public void setEntryformRelativemeritses(Set entryformRelativemeritses) {
 		this.entryformRelativemeritses = entryformRelativemeritses;
 	}
-
+	
 	public List<EntryformJob> getJobList() {
 		return jobList;
 	}

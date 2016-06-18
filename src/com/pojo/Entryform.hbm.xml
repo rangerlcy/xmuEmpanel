@@ -137,11 +137,34 @@
                 <comment>党派名称</comment>
             </column>
         </property>
+        <property name="presentlyLevel" type="java.lang.String">
+            <column name="presently_level" length="200">
+                <comment>现任职务级别</comment>
+            </column>
+        </property>
+        <property name="presentlyJobTime" type="java.lang.String">
+            <column name="presently_job_time" length="200">
+                <comment>现职时间</comment>
+            </column>
+        </property>
+        <property name="presentlyLevelTime" type="java.lang.String">
+            <column name="presently_level_time" length="200">
+                <comment>现级别时间</comment>
+            </column>
+        </property>
         <set name="meetingrecommendStates" inverse="true">
             <key>
                 <column name="entry_form_id" not-null="true" />
             </key>
             <one-to-many class="com.pojo.MeetingrecommendState" />
+        </set>
+        <set name="talkrecommendStates" inverse="true">
+            <key>
+                <column name="entry_form_id" not-null="true">
+                    <comment>报名表id</comment>
+                </column>
+            </key>
+            <one-to-many class="com.pojo.TalkrecommendState" />
         </set>
         <set name="entryformJobs" inverse="true">
             <key>
@@ -154,12 +177,6 @@
                 <column name="entry_form_id" not-null="true" />
             </key>
             <one-to-many class="com.pojo.EntryformFamily" />
-        </set>
-        <set name="talkrecommendStates" inverse="true">
-            <key>
-                <column name="entry_form_id" not-null="true" />
-            </key>
-            <one-to-many class="com.pojo.TalkrecommendState" />
         </set>
         <set name="entryformRelativemeritses" inverse="true">
             <key>

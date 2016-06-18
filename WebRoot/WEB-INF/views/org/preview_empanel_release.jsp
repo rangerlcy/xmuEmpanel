@@ -1,3 +1,4 @@
+<!-- 已发布的选任工作,页面 -->
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%
 	String path = request.getContextPath();
@@ -113,7 +114,7 @@
 				<li class=" "><a href="javascript:;"> <i class="icon-group"></i> <span class="title">事务管理</span> <span class=""></span> <span class="arrow"></span> </a>
 
 					<ul class="sub-menu">
-						<li class=""><a href="">选任流程管理</a></li>
+						<li class=""><a href="selection_process_management.do">选任流程管理</a></li>
 						<li class=""><a href="PSG_management.do">常设考察组管理</a></li>
 						<li class=""><a href="">临时考察组管理</a></li>
 						<li class=""><a href="staff_management.do">教职工人员管理</a></li>
@@ -168,7 +169,7 @@
 							<c:forEach items="${empanel }" var="uv">
 								<tr>
 									<td>${uv.type }</td>
-									<td>${uv.status }</td>
+									<td>${uv.empanelConfig.configName }</td>
 									<td>${uv.name }</td>
 									<td>${uv.flow }</td>
 									<td><a href="preview_empanel_detail.do?empanelId=${uv.id }">进入查看</a>
@@ -205,7 +206,7 @@
 									<div class="control-group">
 										<label class="control-label">选任流程<span style="color: red">*</span> </label>
 										<div class="controls">
-											<input type="text" value="${empanel_detail.status }" readonly="readonly">
+											<input type="text" value="${empanel_detail.empanelConfig.configName }" readonly="readonly">
 										</div>
 									</div>
 
@@ -250,10 +251,6 @@
 											<c:if test="${empty empanel_jobs }">
 												<p>该选任中尚未添加任何岗位</p>
 											</c:if>
-											<!-- 如果岗位集合不空则显示出来 -->
-											<c:if test="${!empty empanel_jobs}">
-												<p>已有的岗位如下，如需修改请删除后重新添加</p>
-											</c:if>
 											<c:forEach items="${empanel_jobs }" var="list">
 												单位：<input class="span3" type="text" value="${list.organization.name }" readonly="readonly">
 												岗位：<input class="span3" type="text" value="${list.job }" readonly="readonly"> 
@@ -269,34 +266,91 @@
 									当前选任工作的进度情况，图例说明: <i class="icon-ok finish">已完成</i> <i class="icon-circle-blank ing">进行中</i> <i class="icon-spinner not_yet">尚未开始</i>
 								</h4>
 								<div style="width:100%; visibility:hidden">1</div>
-								<div class="flow finish show_detail_able">
-									<i class="icon-ok">报名阶段</i>
-								</div>
-								<div class="flow finish show_detail_able">
-									<i class="icon-ok">分配考察组</i>
-								</div>
-								<div class="flow finish show_detail_able">
-									<i class="icon-ok">考察阶段</i>
-								</div>
-								<div class="flow finish show_detail_able">
-									<i class="icon-ok">酝酿人选</i>
-								</div>
-								<div class="flow ing show_detail_able">
-									<i class="icon-circle-blank">征求纪委意见</i>
-								</div>
-								<div class="flow not_yet">
-									<i class="icon-spinner">公示阶段</i>
-								</div>
-								<div class="flow not_yet">
-									<i class="icon-spinner">报批阶段</i>
-								</div>
-								<div class="flow not_yet">
-									<i class="icon-spinner">收尾阶段</i>
-								</div>
+								
+								<c:if test="${prog<1 }">
+									<div class="flow not_yet show_detail_able"><i class="icon-spinner">报名阶段</i></div>
+								</c:if>
+								<c:if test="${prog==1 }">
+									<div class="flow ing show_detail_able"><i class="icon-circle-blank">报名阶段</i></div>
+								</c:if>
+								<c:if test="${prog>1 }">
+									<div class="flow finish show_detail_able"><i class="icon-ok">报名阶段</i></div>
+								</c:if>
+								
+								<c:if test="${prog<2 }">
+									<div class="flow not_yet show_detail_able"><i class="icon-spinner">分配考察组</i></div>
+								</c:if>
+								<c:if test="${prog==2 }">
+									<div class="flow ing show_detail_able"><i class="icon-circle-blank">分配考察组</i></div>
+								</c:if>
+								<c:if test="${prog>2 }">
+									<div class="flow finish show_detail_able"><i class="icon-ok">分配考察组</i></div>
+								</c:if>	
+								
+								<c:if test="${prog<3 }">
+									<div class="flow not_yet show_detail_able"><i class="icon-spinner">考察阶段</i></div>
+								</c:if>
+								<c:if test="${prog==3 }">
+									<div class="flow ing show_detail_able"><i class="icon-circle-blank">考察阶段</i></div>
+								</c:if>
+								<c:if test="${prog>3 }">
+									<div class="flow finish show_detail_able"><i class="icon-ok">考察阶段</i></div>
+								</c:if>	
+								
+								<c:if test="${prog<4 }">
+									<div class="flow not_yet show_detail_able"><i class="icon-spinner">酝酿人选</i></div>
+								</c:if>
+								<c:if test="${prog==4 }">
+									<div class="flow ing show_detail_able"><i class="icon-circle-blank">酝酿人选</i></div>
+								</c:if>
+								<c:if test="${prog>4 }">
+									<div class="flow finish show_detail_able"><i class="icon-ok">酝酿人选</i></div>
+								</c:if>
+								
+								<c:if test="${prog<5 }">
+									<div class="flow not_yet show_detail_able"><i class="icon-spinner">征求纪委意见</i></div>
+								</c:if>
+								<c:if test="${prog==5 }">
+									<div class="flow ing show_detail_able"><i class="icon-circle-blank">征求纪委意见</i></div>
+								</c:if>
+								<c:if test="${prog>5 }">
+									<div class="flow finish show_detail_able"><i class="icon-ok">征求纪委意见</i></div>
+								</c:if>
+
+								<c:if test="${prog<6 }">
+									<div class="flow not_yet show_detail_able"><i class="icon-spinner">公示阶段</i></div>
+								</c:if>
+								<c:if test="${prog==6 }">
+									<div class="flow ing show_detail_able"><i class="icon-circle-blank">公示阶段</i></div>
+								</c:if>
+								<c:if test="${prog>6 }">
+									<div class="flow finish show_detail_able"><i class="icon-ok">公示阶段</i></div>
+								</c:if>
+								
+								<c:if test="${prog<7 }">
+									<div class="flow not_yet show_detail_able"><i class="icon-spinner">报批阶段</i></div>
+								</c:if>
+								<c:if test="${prog==7 }">
+									<div class="flow ing show_detail_able"><i class="icon-circle-blank">报批阶段</i></div>
+								</c:if>
+								<c:if test="${prog>7 }">
+									<div class="flow finish show_detail_able"><i class="icon-ok">报批阶段</i></div>
+								</c:if>
+								
+								<c:if test="${prog<8 }">
+									<div class="flow not_yet show_detail_able"><i class="icon-spinner">收尾阶段</i></div>
+								</c:if>
+								<c:if test="${prog==8 }">
+									<div class="flow ing show_detail_able"><i class="icon-circle-blank">收尾阶段</i></div>
+								</c:if>
+								<c:if test="${prog>8 }">
+									<div class="flow finish show_detail_able"><i class="icon-ok">收尾阶段</i></div>
+								</c:if>
+								
 								<div style="width:100%; visibility:hidden">1</div>
 
 								<div class="progress progress-success progress-striped" role="progressbar">
-									<div class="bar" style="width:62.5%"></div>
+									<div class="bar" style="width:${(prog-1)*12.5}%"></div>
 								</div>
 							</div>
 						</div>

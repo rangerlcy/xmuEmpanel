@@ -1,12 +1,10 @@
-<!-- 首页 -->
+<!-- 选任流程管理 -->
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
-<%
-String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-%>
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
@@ -83,11 +81,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <div class="sidebar-toggler hidden-phone"></div>
                 <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
             </li>
-            <li class="start active">
+            <li class="start">
                 <a href="org_index.do">
                     <i class="icon-home"></i>
                     <span class="title">首页</span>
-                    <span class="selected"></span>
+                    <span class=""></span>
                 </a>
             </li>
             <li class="">
@@ -110,16 +108,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 </ul>
             </li>
 
-            <li class=" ">
+            <li class="active ">
                 <a href="javascript:;">
                     <i class="icon-group"></i>
                     <span class="title">事务管理</span>
-                	<span class=""></span>
-                    <span class="arrow"></span>
+                	<span class="selected"></span>
+                    <span class="arrow open"></span>
                 </a>
 
                 <ul class="sub-menu">
-                	<li class="">
+                	<li class="active">
                         <a href="selection_process_management.do">选任流程管理</a>
                     </li>
                     <li class="">
@@ -170,14 +168,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</div>
 					<!-- END BEGIN STYLE CUSTOMIZER -->
                     <h3 class="page-title">
-                        	组织部首页
+                        	选任流程管理
                         <small></small>
                     </h3>
                     <ul class="breadcrumb">
                         <li>
-                            <i class="icon-home"></i>
-                            <a href="staff_index.do">首页</a>
+                            <i class="icon-group"></i>
+                            <a >事务管理</a>
                             <span class="icon-angle-right"></span>
+                            <a >选任流程管理</a>
                         </li>
                     </ul>
                 </div>
@@ -185,7 +184,89 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <!-- END PAGE HEADER-->
             <!-- BEGIN PAGE CONTENT-->
             <div class="row-fluid">
-               	组织部------ 首页这里写点什么
+               	<div class="span12">
+               		<div class="portlet box blue">
+							<div class="portlet-title">
+								<div class="caption">
+									<i class="icon-download-alt"></i>选任流程
+								</div>
+								<div class="tools">
+									<a href="javascript:;" class="collapse"></a>
+								</div>
+							</div>
+							<div class="portlet-body" id="portlet">
+								<form class="form-horizontal" id="searchUserForm">
+									<div class="control-group">
+										<label class="control-label">名称</label>
+										<div class="controls">
+											<input type="text" id="processName" value="${processName }">
+											
+											<button type="button" class="btn blue" id="search"><i class=" icon-search"></i>搜索</button>
+										</div>
+									</div>
+								</form>
+								
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>名称</th>
+											<th>简要说明</th>
+											<th>使用状态</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										<c:forEach items="${pageList.result }" var="uv">
+											<tr>
+												<th>${uv.user.identifyNum }</th>
+												<th>${uv.name }</th>
+												<th>${uv.sex }</th>
+												<th>${uv.birth }</th>
+												<th>${uv.organization.name }</th>
+												<th>${uv.presentlyJob }</th>
+												<th TID="${uv.id }"><a class="operator resetPSW">重置密码</a> <a class="operator info">个人资料及其历史报名</a></th>
+											</tr>
+										</c:forEach>
+									</tbody>
+								</table>
+								
+								<ide:page page="${pageList }" pageId="userListPage" searchForm="searchUserForm"></ide:page>
+								
+								<div style="margin-top: 20px">
+									<button type="button" class="btn">新增流程</button>
+								</div>
+							</div>
+						</div>	
+               		
+						<div class="portlet box blue">
+							<div class="portlet-title">
+								<div class="caption">
+									<i class="icon-pencil"></i>创建流程
+								</div>
+							</div>
+							<div class="portlet-body form">
+								<form class="form-horizontal" id="data_form" style="margin-top:30px">
+									<div class="control-group">
+										<label class="control-label">选任类型<span style="color: red">*</span> </label>
+										<div class="controls">
+											<select name="type">
+												<option value="">请选择</option>
+												<option value="科级选任">科级选任</option>
+												<option value="中层选任">中层选任</option>
+												<option value="系级选任">系级选任</option>
+											</select>
+										</div>
+									</div>
+								</form>
+
+								<div class="form-actions">
+									<button type="button" class="btn btn-primary" id="create">
+										<i class="icon-ok"></i> 保存创建
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
             </div>
             <!-- END PAGE CONTENT-->
         </div>

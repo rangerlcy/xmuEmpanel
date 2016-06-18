@@ -69,7 +69,7 @@
 						<c:forEach items="${empanel }" var="uv">
 							<tr>
 								<td>${uv.type }</td>
-								<td>${uv.status }</td>
+								<td>${uv.empanelConfig.configName }</td>
 								<td>${uv.name }</td>
 								<td>${uv.startTime }</td>
 								<td>${uv.endTime }</td>

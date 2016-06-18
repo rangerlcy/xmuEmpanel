@@ -1,3 +1,4 @@
+<!-- 常设考察组管理 -->
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%
 	String path = request.getContextPath();
@@ -89,7 +90,7 @@
 				<li class=" active"><a href="javascript:;"> <i class="icon-group"></i> <span class="title">事务管理</span> <span class="selected"></span> <span class="arrow open"></span> </a>
 
 					<ul class="sub-menu">
-						<li class=""><a href="">选任流程管理</a></li>
+						<li class=""><a href="selection_process_management.do">选任流程管理</a></li>
 						<li class="active"><a href="PSG_management.do">常设考察组管理</a></li>
 						<li class=""><a href="">临时考察组管理</a></li>
 						<li class=""><a href="staff_management.do">教职工人员管理</a></li>

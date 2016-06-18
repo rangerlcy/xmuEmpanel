@@ -15,7 +15,6 @@ public class EmpanelStudygroup implements java.io.Serializable {
 	private Studygroup studygroup;
 	private Organization organization;
 	private Integer empanelId;
-	private Set meetingrecommends = new HashSet(0);
 
 	// Constructors
 
@@ -23,19 +22,11 @@ public class EmpanelStudygroup implements java.io.Serializable {
 	public EmpanelStudygroup() {
 	}
 
-	/** minimal constructor */
+	/** full constructor */
 	public EmpanelStudygroup(Studygroup studygroup, Organization organization, Integer empanelId) {
 		this.studygroup = studygroup;
 		this.organization = organization;
 		this.empanelId = empanelId;
-	}
-
-	/** full constructor */
-	public EmpanelStudygroup(Studygroup studygroup, Organization organization, Integer empanelId, Set meetingrecommends) {
-		this.studygroup = studygroup;
-		this.organization = organization;
-		this.empanelId = empanelId;
-		this.meetingrecommends = meetingrecommends;
 	}
 
 	// Property accessors
@@ -70,14 +61,6 @@ public class EmpanelStudygroup implements java.io.Serializable {
 
 	public void setEmpanelId(Integer empanelId) {
 		this.empanelId = empanelId;
-	}
-
-	public Set getMeetingrecommends() {
-		return this.meetingrecommends;
-	}
-
-	public void setMeetingrecommends(Set meetingrecommends) {
-		this.meetingrecommends = meetingrecommends;
 	}
 
 }

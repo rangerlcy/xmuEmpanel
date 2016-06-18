@@ -11,10 +11,24 @@
             <generator class="assigned" />
         </id>
         <many-to-one name="entryform" class="com.pojo.Entryform" fetch="select">
-            <column name="entry_form_id" not-null="true" />
+            <column name="entry_form_id" not-null="true">
+                <comment>报名表id</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="empanel" class="com.pojo.Empanel" fetch="select">
+            <column name="empanel_id" not-null="true">
+                <comment>选任id，外键</comment>
+            </column>
         </many-to-one>
         <property name="vote" type="java.lang.Integer">
-            <column name="vote" not-null="true" />
+            <column name="vote">
+                <comment>态度，（同意、反对、弃权）</comment>
+            </column>
+        </property>
+        <property name="votePeople" type="java.lang.String">
+            <column name="vote_people" length="200" not-null="true">
+                <comment>投票的人，表态的人，临时输入进去的</comment>
+            </column>
         </property>
     </class>
 </hibernate-mapping>

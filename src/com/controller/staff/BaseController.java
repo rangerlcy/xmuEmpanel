@@ -513,6 +513,24 @@ public class BaseController {
 			return URLEncoder.encode("现任职务未填写", "UTF-8");
 		}
 		
+		if(form.getPresently_job_time().isEmpty()){
+			return URLEncoder.encode("任职时间未填写", "UTF-8");
+		}
+		if(form.getPresently_job_time().trim().length()<6 ||form.getPresently_job_time().trim().length()>7 || form.getPresently_job_time().charAt(4)!='.' || form.getPresently_job_time().charAt(5)=='0'){
+			return URLEncoder.encode("任职时间格式错误", "UTF-8");
+		}
+		
+		if(form.getPresently_level_time().isEmpty()){
+			return URLEncoder.encode("级别时间未填写", "UTF-8");
+		}
+		if(form.getPresently_level_time().trim().length()<6 ||form.getPresently_level_time().trim().length()>7 || form.getPresently_level_time().charAt(4)!='.' || form.getPresently_level_time().charAt(5)=='0'){
+			return URLEncoder.encode("级别时间格式错误", "UTF-8");
+		}
+		
+		if(form.getPresently_level().isEmpty()){
+			return URLEncoder.encode("职务级别未填写", "UTF-8");
+		}
+		
 		if(form.getCv().isEmpty()){
 			return URLEncoder.encode("简历未填写", "UTF-8");
 		}
@@ -581,6 +599,9 @@ public class BaseController {
 
 		entryform.setOrganization(organizationService.queryOrganizationByName(form.getOrganization()));
 		entryform.setPresentlyJob(form.getJob());
+		entryform.setPresentlyJobTime(form.getPresently_job_time());
+		entryform.setPresentlyLevel(form.getPresently_level());
+		entryform.setPresentlyLevelTime(form.getPresently_level_time());
 		entryform.setResume(form.getCv());
 		entryform.setPunishReward(form.getReward_and_punishment());
 		entryform.setAppraisalResult(form.getCheck_result());
@@ -738,6 +759,10 @@ public class BaseController {
 			info.setOrganization(null);
 		}
 		info.setJob(entryform.getPresentlyJob());
+		info.setPresently_job_time(entryform.getPresentlyJobTime());
+		info.setPresently_level(entryform.getPresentlyLevel());
+		info.setPresently_level_time(entryform.getPresentlyLevelTime());
+		
 		info.setCv(entryform.getResume());
 		info.setReward_and_punishment(entryform.getPunishReward());
 		info.setCheck_result(entryform.getAppraisalResult());

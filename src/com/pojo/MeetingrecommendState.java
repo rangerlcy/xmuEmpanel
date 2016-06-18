@@ -10,7 +10,7 @@ public class MeetingrecommendState implements java.io.Serializable {
 
 	private Integer id;
 	private Entryform entryform;
-	private Meetingrecommend meetingrecommend;
+	private Empanel empanel;
 	private Integer total;
 	private Integer morality;
 	private Integer writting;
@@ -27,11 +27,11 @@ public class MeetingrecommendState implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public MeetingrecommendState(Integer id, Entryform entryform, Meetingrecommend meetingrecommend, Integer total, Integer morality, Integer writting, Integer unit, Integer fair,
-			Integer honest, Integer performance, Integer recommend) {
+	public MeetingrecommendState(Integer id, Entryform entryform, Empanel empanel, Integer total, Integer morality, Integer writting, Integer unit, Integer fair, Integer honest,
+			Integer performance, Integer recommend) {
 		this.id = id;
 		this.entryform = entryform;
-		this.meetingrecommend = meetingrecommend;
+		this.empanel = empanel;
 		this.total = total;
 		this.morality = morality;
 		this.writting = writting;
@@ -60,12 +60,12 @@ public class MeetingrecommendState implements java.io.Serializable {
 		this.entryform = entryform;
 	}
 
-	public Meetingrecommend getMeetingrecommend() {
-		return this.meetingrecommend;
+	public Empanel getEmpanel() {
+		return this.empanel;
 	}
 
-	public void setMeetingrecommend(Meetingrecommend meetingrecommend) {
-		this.meetingrecommend = meetingrecommend;
+	public void setEmpanel(Empanel empanel) {
+		this.empanel = empanel;
 	}
 
 	public Integer getTotal() {

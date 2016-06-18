@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50622
 File Encoding         : 65001
 
-Date: 2016-05-29 11:46:16
+Date: 2016-06-18 12:36:09
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -142,7 +142,7 @@ DROP TABLE IF EXISTS `empanel`;
 CREATE TABLE `empanel` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
-  `status` varchar(200) DEFAULT NULL COMMENT '状态或流程',
+  `status` int(20) NOT NULL COMMENT '外键关联到empanel_config',
   `type` varchar(200) DEFAULT NULL,
   `flow` varchar(200) DEFAULT NULL COMMENT '当前进行到的流程',
   `start_time` varchar(200) DEFAULT NULL COMMENT '报名开始时间',
@@ -151,18 +151,45 @@ CREATE TABLE `empanel` (
   `avg_max_num` int(11) DEFAULT '1' COMMENT '每人最大可选岗位数量',
   `is_realease` tinyint(4) NOT NULL DEFAULT '0' COMMENT '选任工作是否发布',
   `del_flag` tinyint(4) NOT NULL DEFAULT '0' COMMENT '删除位，若为1则表示该选任工作已经过时无效，是历史选任工作',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `status_FK` (`status`),
+  CONSTRAINT `status_FK` FOREIGN KEY (`status`) REFERENCES `empanel_config` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of empanel
 -- ----------------------------
-INSERT INTO `empanel` VALUES ('1', '2016年1月科级选任', '科级1', '科级选任', '报名阶段', '2016-5-25', '2016-7-10', '选任计划。。。', '1', '1', '0');
-INSERT INTO `empanel` VALUES ('2', 'xxx年x月选任', '科级2', '科级选任', '报名阶段', '2016-3-3', '2016-4-2', '不知道写什么', '1', '1', '0');
-INSERT INTO `empanel` VALUES ('3', '2020年8月选', '中层1', '中层选任', '报名阶段', '2016-2-1', '2016-2-3', '计划！！！', '1', '1', '0');
-INSERT INTO `empanel` VALUES ('4', '2016年暑假选任', '科级1', '科级选任', '报名阶段', '2016-5-21', '2016-9-1', '计划拟任xxx。。', '1', '1', '0');
-INSERT INTO `empanel` VALUES ('5', '2016.5系级选任', '系级选任流程2016', '系级选任', '报名阶段', '2016-5-10', '2016-6-19', '这次拟选任5人系级干部', '2', '1', '0');
-INSERT INTO `empanel` VALUES ('6', '一些院系系级选任', '系级选任流程2016', '科级选任', '未发布', '2016-9-18', '2016-10-18', '', '0', '0', '0');
+INSERT INTO `empanel` VALUES ('1', '2016年1月科级选任', '1', '科级选任', '报名阶段', '2016-5-25', '2016-7-10', '选任计划。。。', '1', '1', '0');
+INSERT INTO `empanel` VALUES ('2', 'xxx年x月选任', '1', '科级选任', '报名阶段', '2016-3-3', '2016-4-2', '不知道写什么', '1', '1', '0');
+INSERT INTO `empanel` VALUES ('3', '2020年8月选', '1', '中层选任', '报名阶段', '2016-2-1', '2016-2-3', '计划！！！', '1', '1', '0');
+INSERT INTO `empanel` VALUES ('4', '2016年暑假选任', '1', '科级选任', '报名阶段', '2016-5-21', '2016-9-1', '计划拟任xxx。。', '1', '1', '0');
+INSERT INTO `empanel` VALUES ('5', '2016.5系级选任', '1', '系级选任', '报名阶段', '2016-5-10', '2016-6-19', '这次拟选任5人系级干部', '2', '1', '0');
+INSERT INTO `empanel` VALUES ('6', '一些院系系级选任', '1', '科级选任', '未发布', '2016-9-18', '2016-10-18', '', '0', '0', '0');
+
+-- ----------------------------
+-- Table structure for `empanel_config`
+-- ----------------------------
+DROP TABLE IF EXISTS `empanel_config`;
+CREATE TABLE `empanel_config` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `config_name` varchar(200) NOT NULL COMMENT '选任流程配置名称，名称唯一',
+  `illustration` varchar(200) DEFAULT NULL COMMENT '流程说明',
+  `enroll_type` varchar(200) DEFAULT NULL COMMENT '报名类型',
+  `studygroup_type` varchar(200) DEFAULT NULL COMMENT '考察组类型',
+  `meeting_recommend_model` varchar(200) DEFAULT NULL COMMENT '会议推荐表格模板',
+  `talking_recommend_model` varchar(200) DEFAULT NULL COMMENT '谈话推荐表模板',
+  `talking_record_model` varchar(200) DEFAULT NULL COMMENT '谈话记录表',
+  `entryform_person_model` varchar(200) DEFAULT NULL COMMENT '报名人员花名册(人员)',
+  `entryform_job_model` varchar(200) DEFAULT NULL COMMENT '报名人员花名册(岗位)',
+  `appoint_model` varchar(200) DEFAULT NULL COMMENT '干部任免审批表',
+  PRIMARY KEY (`id`),
+  KEY `config_name` (`config_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='选任流程配置';
+
+-- ----------------------------
+-- Records of empanel_config
+-- ----------------------------
+INSERT INTO `empanel_config` VALUES ('1', '系级选任流程2016', '简要描述', '报名', '常设考察组', null, null, null, null, null, null);
 
 -- ----------------------------
 -- Table structure for `empanel_job`
@@ -180,7 +207,7 @@ CREATE TABLE `empanel_job` (
   KEY `empanel_id` (`empanel_id`),
   CONSTRAINT `empanel_job_ibfk_1` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`),
   CONSTRAINT `empanel_job_ibfk_2` FOREIGN KEY (`empanel_id`) REFERENCES `empanel` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of empanel_job
@@ -193,6 +220,7 @@ INSERT INTO `empanel_job` VALUES ('5', '1', '科长', '主席', '3', '1');
 INSERT INTO `empanel_job` VALUES ('8', '3', '人文办公室主任', '科级', '4', '10');
 INSERT INTO `empanel_job` VALUES ('9', '1', '计算机系实验室主任', '科级', '5', '2');
 INSERT INTO `empanel_job` VALUES ('10', '1', '自动化系办公室助理', '聘任', '5', '3');
+INSERT INTO `empanel_job` VALUES ('11', '4', '海洋岗位', '系级、副处级', '6', '1');
 
 -- ----------------------------
 -- Table structure for `empanel__studygroup`
@@ -249,6 +277,9 @@ CREATE TABLE `entryform` (
   `empanel_id` int(10) unsigned DEFAULT NULL,
   `user_id` int(10) unsigned DEFAULT NULL,
   `party_name` varchar(200) DEFAULT NULL COMMENT '党派名称',
+  `presently_level` varchar(200) DEFAULT NULL COMMENT '现任职务级别',
+  `presently_job_time` varchar(200) DEFAULT NULL COMMENT '现职时间',
+  `presently_level_time` varchar(200) DEFAULT NULL COMMENT '现级别时间',
   PRIMARY KEY (`id`),
   KEY `empanel` (`empanel_id`),
   KEY `user_id` (`user_id`),
@@ -256,23 +287,24 @@ CREATE TABLE `entryform` (
   CONSTRAINT `entryform_ibfk_1` FOREIGN KEY (`empanel_id`) REFERENCES `empanel` (`id`),
   CONSTRAINT `entryform_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `entryform_ibfk_3` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of entryform
 -- ----------------------------
-INSERT INTO `entryform` VALUES ('7', 'admin', '男', '1992.4', '景颇族', '广东省-广东市-广县', '湖南省-长沙市-沙县', '/empanel/staff_photo/photo-2016-05-23 23-17-48-096.jpg', '2008.6', '2007.3', '2007.7', 'asdqwwe', 'czczxw2', '中专', '出版硕士', 'xx21s', '研究生', '农学硕士', 'cds32fdscv', '18850010090', '12345678@163.com', '1', 'asdsqe21s', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zzxasd', 'qwe123as', null, null, '7', '中共');
-INSERT INTO `entryform` VALUES ('32', 'admin', '男', '1992.4', '景颇族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-05-21 16-09-34-419.jpg', '2008.6', '2007.3', '2007.7', 'asdqwwe', 'czczxw2', '中专', '出版硕士', 'xx21s', '研究生', '农学硕士', 'cds32fdscv', '18850010090', '12345678@163.com', '2', 'asdsqe21s', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zzxasd', 'qwe123as', null, '2', '7', '中共');
-INSERT INTO `entryform` VALUES ('35', 'admin', '男', '1992.4', '景颇族', '广东省-广东市-广县', '湖南省-长沙市-沙县', '/empanel/staff_photo/photo-2016-05-21 16-09-34-419.jpg', '2008.6', '2007.3', '2007.7', 'asdqwwe', 'czczxw2', '中专', '出版硕士', 'xx21s', '研究生', '农学硕士', 'cds32fdscv', '18850010090', '12345678@163.com', '2', 'asdsqe21s', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zzxasd', 'qwe123as', null, '1', '7', '中共');
-INSERT INTO `entryform` VALUES ('41', 'admin', '男', '1992.4', '景颇族', '广东省-广东市-广县', '湖南省-长沙市-沙县', '/empanel/staff_photo/photo-2016-05-23 23-17-48-096.jpg', '2008.6', '2007.3', '2007.7', 'asdqwwe', 'czczxw2', '中专', '出版硕士', 'xx21s', '研究生', '农学硕士', 'cds32fdscv', '18850010090', '12345678@163.com', '1', 'asdsqe21s', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zzxasd', 'qwe123as', null, '3', '7', '中共');
-INSERT INTO `entryform` VALUES ('42', '教师1', '男', '2005.5', '仫佬族', '湖南省-长沙市-沙县', '广东省-广东市-广县', '/empanel/staff_photo/photo-2016-05-24 12-06-47-992.jpg', '2004.12', '2007.7', '2007.8', '专业', '特长', '本科', '农学博士', '阿斯顿', '本科', '农学硕士', '自行车', '12121212', '10@1.c', '1', '权威', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zds', 'qwe', null, null, '13', '农工');
-INSERT INTO `entryform` VALUES ('43', '教师1', '男', '1993.4', '仫佬族', '湖南省-长沙市-沙县', '广东省-广东市-广县', '/empanel/staff_photo/photo-2016-05-24 12-06-47-992.jpg', '1993.6', '1996.7', '1995.4', '专业', '特长', '本科', '农学博士', '阿斯顿', '本科', '农学硕士', '自行车', '12121212', '10@1.c', '1', '权威', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zds', 'qwe', null, '1', '13', '农工');
-INSERT INTO `entryform` VALUES ('44', '教师1', '男', '1993.4', '仫佬族', '湖南省-长沙市-沙县', '广东省-广东市-广县', '/empanel/staff_photo/photo-2016-05-24 12-06-47-992.jpg', '1993.6', '1996.7', '1995.4', '专业', '特长', '本科', '农学博士', '阿斯顿', '本科', '农学硕士', '自行车', '12121212', '10@1.c', '1', '权威', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zds', 'qwe', null, '3', '13', '农工');
-INSERT INTO `entryform` VALUES ('45', '教职工1', '男', '2003.6', '汉族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-05-24 22-18-12-010.jpg', '2006.6', '2007.6', '2007.10', '专业技术', '专业特长', '专科', '兽医博士', 'q2ax', '', '', '', '909090', '90908@q.c', '1', 'qwe', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', '', '', null, null, '14', '民盟');
-INSERT INTO `entryform` VALUES ('46', '教职工1', '男', '2003.6', '汉族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-05-24 22-18-12-010.jpg', '2006.6', '2007.6', '2007.10', '专业技术', '专业特长', '专科', '兽医博士', 'q2ax', '', '', '', '909090', '90908@q.c', '1', 'qwe', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', '', '', null, '1', '14', '民盟');
-INSERT INTO `entryform` VALUES ('47', '教职工1', '男', '2003.6', '汉族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-05-24 22-18-12-010.jpg', '2006.6', '2007.6', '2007.10', '专业技术', '专业特长', '专科', '兽医博士', 'q2ax', '', '', '', '909090', '90908@q.c', '1', 'qwe', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', '', '', null, '2', '14', '民盟');
-INSERT INTO `entryform` VALUES ('48', '教师1', '男', '1993.4', '仫佬族', '湖南省-长沙市-沙县', '广东省-广东市-广县', '/empanel/staff_photo/photo-2016-05-24 12-06-47-992.jpg', '1993.6', '1996.7', '1995.4', '专业', '特长', '本科', '农学博士', '阿斯顿', '本科', '农学硕士', '自行车', '12121212', '10@1.c', '1', '权威', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zds', 'qwe', null, '2', '13', '农工');
-INSERT INTO `entryform` VALUES ('49', '职工2', '男', null, '彝族', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '897@w.s', null, null, null, null, null, null, null, '15', null);
+INSERT INTO `entryform` VALUES ('7', 'admin', '男', '1992.4', '景颇族', '广东省-广东市-广县', '湖南省-长沙市-沙县', '/empanel/staff_photo/photo-2016-05-23 23-17-48-096.jpg', '2008.6', '2007.3', '2007.7', 'asdqwwe', 'czczxw2', '中专', '出版硕士', 'xx21s', '研究生', '农学硕士', 'cds32fdscv', '18850010090', '12345678@163.com', '1', 'asdsqe21s', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zzxasd', 'qwe123as', null, null, '7', '中共', null, null, null);
+INSERT INTO `entryform` VALUES ('32', 'admin', '男', '1992.4', '景颇族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-05-21 16-09-34-419.jpg', '2008.6', '2007.3', '2007.7', 'asdqwwe', 'czczxw2', '中专', '出版硕士', 'xx21s', '研究生', '农学硕士', 'cds32fdscv', '18850010090', '12345678@163.com', '2', 'asdsqe21s', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zzxasd', 'qwe123as', null, '2', '7', '中共', null, null, null);
+INSERT INTO `entryform` VALUES ('35', 'admin', '男', '1992.4', '景颇族', '广东省-广东市-广县', '湖南省-长沙市-沙县', '/empanel/staff_photo/photo-2016-05-21 16-09-34-419.jpg', '2008.6', '2007.3', '2007.7', 'asdqwwe', 'czczxw2', '中专', '出版硕士', 'xx21s', '研究生', '农学硕士', 'cds32fdscv', '18850010090', '12345678@163.com', '2', 'asdsqe21s', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zzxasd', 'qwe123as', null, '1', '7', '中共', null, null, null);
+INSERT INTO `entryform` VALUES ('41', 'admin', '男', '1992.4', '景颇族', '广东省-广东市-广县', '湖南省-长沙市-沙县', '/empanel/staff_photo/photo-2016-05-23 23-17-48-096.jpg', '2008.6', '2007.3', '2007.7', 'asdqwwe', 'czczxw2', '中专', '出版硕士', 'xx21s', '研究生', '农学硕士', 'cds32fdscv', '18850010090', '12345678@163.com', '1', 'asdsqe21s', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zzxasd', 'qwe123as', null, '3', '7', '中共', null, null, null);
+INSERT INTO `entryform` VALUES ('42', '教师1', '男', '2005.5', '仫佬族', '湖南省-长沙市-沙县', '广东省-广东市-广县', '/empanel/staff_photo/photo-2016-05-24 12-06-47-992.jpg', '2004.12', '2007.7', '2007.8', '专业', '特长', '本科', '农学博士', '阿斯顿', '本科', '农学硕士', '自行车', '12121212', '10@1.c', '1', '权威', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zds', 'qwe', null, null, '13', '农工', null, null, null);
+INSERT INTO `entryform` VALUES ('43', '教师1', '男', '1993.4', '仫佬族', '湖南省-长沙市-沙县', '广东省-广东市-广县', '/empanel/staff_photo/photo-2016-05-24 12-06-47-992.jpg', '1993.6', '1996.7', '1995.4', '专业', '特长', '本科', '农学博士', '阿斯顿', '本科', '农学硕士', '自行车', '12121212', '10@1.c', '1', '权威', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zds', 'qwe', null, '1', '13', '农工', null, null, null);
+INSERT INTO `entryform` VALUES ('44', '教师1', '男', '1993.4', '仫佬族', '湖南省-长沙市-沙县', '广东省-广东市-广县', '/empanel/staff_photo/photo-2016-05-24 12-06-47-992.jpg', '1993.6', '1996.7', '1995.4', '专业', '特长', '本科', '农学博士', '阿斯顿', '本科', '农学硕士', '自行车', '12121212', '10@1.c', '1', '权威', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zds', 'qwe', null, '3', '13', '农工', null, null, null);
+INSERT INTO `entryform` VALUES ('45', '教职工1', '男', '2003.6', '汉族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-06-14 18-10-32-171.jpg', '2006.6', '2007.6', '2007.10', '专业技术', '专业特长', '专科', '兽医博士', 'q2ax', '', '', '', '909090', '90908@q.c', '1', 'qwe', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', '', '', null, null, '14', '民盟', '副部级', '2012.4', '2014.10');
+INSERT INTO `entryform` VALUES ('46', '教职工1', '男', '2003.6', '汉族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-05-24 22-18-12-010.jpg', '2006.6', '2007.6', '2007.10', '专业技术', '专业特长', '专科', '兽医博士', 'q2ax', '', '', '', '909090', '90908@q.c', '1', 'qwe', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', '', '', null, '1', '14', '民盟', null, null, null);
+INSERT INTO `entryform` VALUES ('47', '教职工1', '男', '2003.6', '汉族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-05-24 22-18-12-010.jpg', '2006.6', '2007.6', '2007.10', '专业技术', '专业特长', '专科', '兽医博士', 'q2ax', '', '', '', '909090', '90908@q.c', '1', 'qwe', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', '', '', null, '2', '14', '民盟', null, null, null);
+INSERT INTO `entryform` VALUES ('48', '教师1', '男', '1993.4', '仫佬族', '湖南省-长沙市-沙县', '广东省-广东市-广县', '/empanel/staff_photo/photo-2016-05-24 12-06-47-992.jpg', '1993.6', '1996.7', '1995.4', '专业', '特长', '本科', '农学博士', '阿斯顿', '本科', '农学硕士', '自行车', '12121212', '10@1.c', '1', '权威', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', 'zds', 'qwe', null, '2', '13', '农工', null, null, null);
+INSERT INTO `entryform` VALUES ('49', '职工2', '男', null, '彝族', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '897@w.s', null, null, null, null, null, null, null, '15', null, null, null, null);
+INSERT INTO `entryform` VALUES ('50', '教职工1', '男', '2003.6', '汉族', '广东省-广东市-广县', '福建省-厦门市-厦县', '/empanel/staff_photo/photo-2016-05-24 22-18-12-010.jpg', '2006.6', '2007.6', '2007.10', '专业技术', '专业特长', '专科', '兽医博士', 'q2ax', '', '', '', '909090', '90908@q.c', '1', 'qwe', '请使用下面的格式填写简历\r\n1983.09—1987.07  **大学**系**专业学习，获**学学士学位\r\n1987.09—1990.07  **大学**系**专业研究生学习，获**学硕士学位\r\n1990.09—1993.07  **大学**处科员\r\n1993.08—1998.04  **大学**学院团委副书记 副科级\r\n1998.05—2002.03  **大学**学院团委书记 正科级\r\n2002.03—         **大学**处秘书 正科级（其间：2003.09—2006.07  **大学**系**专业在职研究生学习，获**学博士学位）', '', '', null, '3', '14', '民盟', null, null, null);
 
 -- ----------------------------
 -- Table structure for `entryform_family`
@@ -443,25 +475,8 @@ INSERT INTO `login_user` VALUES ('staff1', '111111', '5');
 INSERT INTO `login_user` VALUES ('staff2', '111111', '5');
 INSERT INTO `login_user` VALUES ('study', '111111', '3');
 INSERT INTO `login_user` VALUES ('study2', '111111', '3');
-INSERT INTO `login_user` VALUES ('study3', '111111', '3');
 INSERT INTO `login_user` VALUES ('teacher1', '111111', '5');
 INSERT INTO `login_user` VALUES ('tempstudy', '111111', '4');
-
--- ----------------------------
--- Table structure for `meetingrecommend`
--- ----------------------------
-DROP TABLE IF EXISTS `meetingrecommend`;
-CREATE TABLE `meetingrecommend` (
-  `id` int(10) unsigned NOT NULL COMMENT '会议推荐表',
-  `allocate_id` int(10) unsigned DEFAULT NULL COMMENT '分配任务',
-  PRIMARY KEY (`id`),
-  KEY `allocate_id` (`allocate_id`),
-  CONSTRAINT `meetingrecommend_ibfk_1` FOREIGN KEY (`allocate_id`) REFERENCES `empanel__studygroup` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of meetingrecommend
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `meetingrecommend_state`
@@ -470,7 +485,7 @@ DROP TABLE IF EXISTS `meetingrecommend_state`;
 CREATE TABLE `meetingrecommend_state` (
   `id` int(11) NOT NULL,
   `entry_form_id` int(10) unsigned NOT NULL,
-  `meeting_recommend_id` int(10) unsigned NOT NULL,
+  `empanel_id` int(11) unsigned NOT NULL,
   `total` int(4) NOT NULL,
   `morality` int(4) NOT NULL,
   `writting` int(4) NOT NULL,
@@ -481,9 +496,9 @@ CREATE TABLE `meetingrecommend_state` (
   `recommend` int(4) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `entry_form_id` (`entry_form_id`),
-  KEY `meeting_recommend_id` (`meeting_recommend_id`),
-  CONSTRAINT `meetingrecommend_state_ibfk_1` FOREIGN KEY (`entry_form_id`) REFERENCES `entryform` (`id`),
-  CONSTRAINT `meetingrecommend_state_ibfk_2` FOREIGN KEY (`meeting_recommend_id`) REFERENCES `meetingrecommend` (`id`)
+  KEY `meetingrecommendFK2` (`empanel_id`),
+  CONSTRAINT `meetingrecommendFK2` FOREIGN KEY (`empanel_id`) REFERENCES `empanel` (`id`),
+  CONSTRAINT `meetingrecommend_state_ibfk_1` FOREIGN KEY (`entry_form_id`) REFERENCES `entryform` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -612,7 +627,7 @@ CREATE TABLE `studygroup` (
 -- ----------------------------
 INSERT INTO `studygroup` VALUES ('1', '测试考察组', 'study', '0', '0', '1');
 INSERT INTO `studygroup` VALUES ('2', '测试考察组2', 'study2', '0', '0', '2');
-INSERT INTO `studygroup` VALUES ('5', '赖子强的考察组', 'study3', '0', '0', '4');
+INSERT INTO `studygroup` VALUES ('5', '赖子强的考察组', null, '0', '1', '4');
 
 -- ----------------------------
 -- Table structure for `studygroup_person`
@@ -704,31 +719,20 @@ INSERT INTO `sysrole` VALUES ('4', 'TSG', '临时考察组');
 INSERT INTO `sysrole` VALUES ('5', 'staff', '普通员工');
 
 -- ----------------------------
--- Table structure for `talkrecommend`
--- ----------------------------
-DROP TABLE IF EXISTS `talkrecommend`;
-CREATE TABLE `talkrecommend` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL COMMENT '谈话对象',
-  `job` varchar(255) NOT NULL COMMENT '所在单位及职务、职称',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of talkrecommend
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `talkrecommend_state`
 -- ----------------------------
 DROP TABLE IF EXISTS `talkrecommend_state`;
 CREATE TABLE `talkrecommend_state` (
   `id` int(10) unsigned NOT NULL,
-  `entry_form_id` int(10) unsigned NOT NULL,
-  `vote` int(4) NOT NULL,
+  `entry_form_id` int(10) unsigned NOT NULL COMMENT '报名表id',
+  `vote` int(4) DEFAULT NULL COMMENT '态度，（同意、反对、弃权）',
+  `vote_people` varchar(200) NOT NULL COMMENT '投票的人，表态的人，临时输入进去的',
+  `empanel_id` int(11) unsigned NOT NULL COMMENT '选任id，外键',
   PRIMARY KEY (`id`),
-  KEY `entry_form_id` (`entry_form_id`),
-  CONSTRAINT `talkrecommend_state_ibfk_1` FOREIGN KEY (`entry_form_id`) REFERENCES `entryform` (`id`)
+  KEY `talkrecommend_FK1` (`entry_form_id`),
+  KEY `talkrecommend_FK2` (`empanel_id`) USING BTREE,
+  CONSTRAINT `talkrecommend_FK1` FOREIGN KEY (`entry_form_id`) REFERENCES `entryform` (`id`),
+  CONSTRAINT `talkrecommend_FK2` FOREIGN KEY (`empanel_id`) REFERENCES `empanel` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

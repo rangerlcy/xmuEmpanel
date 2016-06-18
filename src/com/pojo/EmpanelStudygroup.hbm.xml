@@ -19,13 +19,5 @@
         <property name="empanelId" type="java.lang.Integer">
             <column name="empanel_id" not-null="true" />
         </property>
-        <set name="meetingrecommends" inverse="true">
-            <key>
-                <column name="allocate_id">
-                    <comment>分配任务</comment>
-                </column>
-            </key>
-            <one-to-many class="com.pojo.Meetingrecommend" />
-        </set>
     </class>
 </hibernate-mapping>

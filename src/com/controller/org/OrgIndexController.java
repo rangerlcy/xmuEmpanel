@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.model.page.Page;
 import com.common.WebApplication;
 import com.pojo.Empanel;
+import com.pojo.EmpanelConfig;
 import com.pojo.EmpanelJob;
 import com.pojo.Entryform;
 import com.pojo.EntryformFamily;
@@ -28,6 +29,7 @@ import com.pojo.StudygroupPerson;
 import com.pojo.StudygroupPersonStore;
 import com.pojo.WebDataEmpanel;
 import com.security.service.LoginUserDetailServiceImpl;
+import com.service.EmpanelConfigService;
 import com.service.EmpanelJobService;
 import com.service.EmpanelService;
 import com.service.EntryFormFamilyService;
@@ -64,7 +66,8 @@ public class OrgIndexController {
 	EntryFormFamilyService entryFormFamilyService;
 	@Autowired
 	EntryFormJobService entryFormJobService;
-	
+	@Autowired
+	EmpanelConfigService empanelConfigService;
 	
 	@RequestMapping("/org_index.do")
 	public String org_index(Model model){
@@ -100,7 +103,12 @@ public class OrgIndexController {
 		if(webData.getStatus()==null || webData.getStatus().equals("")){
 			return URLEncoder.encode("选任流程必须填写", "UTF-8");
 		}else{
-			empanel.setStatus(webData.getStatus());
+			EmpanelConfig config = empanelConfigService.queryByName(webData.getStatus());
+			if(config==null){
+				System.out.println("找不到选任流程，出现错误，正常情况下一个选任工作必须有一个给定的流程");
+				empanel.setEmpanelConfig(null);
+			}
+			empanel.setEmpanelConfig(config);
 		}
 		
 		if(webData.getEmpanel_name()==null ||webData.getEmpanel_name().equals("")){
@@ -190,6 +198,36 @@ public class OrgIndexController {
 			return "org/preview_empanel_noRelease";
 		}
 		else{		//已发布
+			String flow = empanel.getFlow();
+			int progress=0;
+			if(flow.equals("报名阶段")){
+				progress=1;
+			}
+			if(flow.equals("分配考察组")){
+				progress=2;
+			}
+			if(flow.equals("考察阶段")){
+				progress=3;
+			}
+			if(flow.equals("酝酿人选")){
+				progress=4;
+			}
+			if(flow.equals("征求纪委意见")){
+				progress=5;
+			}
+			if(flow.equals("公示阶段")){
+				progress=6;
+			}
+			if(flow.equals("报批阶段")){
+				progress = 7;
+			}
+			if(flow.equals("收尾阶段")){
+				progress=8;
+			}
+			if(flow.equals("已完成")){
+				progress=9;
+			}
+			model.addAttribute("prog", progress);
 			return "org/preview_empanel_release";
 		}
 		
@@ -325,7 +363,14 @@ public class OrgIndexController {
 		return URLEncoder.encode("删除成功", "UTF-8");
 	}
 	
-
+	
+	//打开选任流程管理
+	@RequestMapping("selection_process_management.do")
+	public String selection_process_management(Model model){
+		model.addAttribute("username", WebApplication.getCurrUser().getUsername());
+		return "org/selection_process_management";
+	}
+	
 	//打开常设考察组管理
 	@RequestMapping("PSG_management.do")
 	public String PSG_management(Model model, String toPage, String PSGName, String org){

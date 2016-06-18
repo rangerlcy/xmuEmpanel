@@ -54,6 +54,7 @@
 		<mapping resource="com/pojo/Studygroup.hbm.xml" />
 		<mapping resource="com/pojo/TalkrecommendState.hbm.xml" />
 		<mapping resource="com/pojo/Meetingrecommend.hbm.xml" />
+		<mapping resource="com/pojo/EmpanelConfig.hbm.xml" />
 
 	</session-factory>
 

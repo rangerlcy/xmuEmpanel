@@ -40,6 +40,9 @@ public class SignInForm {
 	private String organization;
 	private String job;
 	private String employe_job;
+	private String presently_job_time;
+	private String presently_level;
+	private String presently_level_time;
 	private String cv;
 	private String reward_and_punishment;
 	private String check_result;
@@ -326,5 +329,23 @@ public class SignInForm {
 	}
 	public void setParty_name(String party_name) {
 		this.party_name = party_name;
+	}
+	public String getPresently_job_time() {
+		return presently_job_time;
+	}
+	public void setPresently_job_time(String presently_job_time) {
+		this.presently_job_time = presently_job_time;
+	}
+	public String getPresently_level() {
+		return presently_level;
+	}
+	public void setPresently_level(String presently_level) {
+		this.presently_level = presently_level;
+	}
+	public String getPresently_level_time() {
+		return presently_level_time;
+	}
+	public void setPresently_level_time(String presently_level_time) {
+		this.presently_level_time = presently_level_time;
 	}
 }

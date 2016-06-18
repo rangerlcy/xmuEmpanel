@@ -13,8 +13,8 @@
         <many-to-one name="entryform" class="com.pojo.Entryform" fetch="select">
             <column name="entry_form_id" not-null="true" />
         </many-to-one>
-        <many-to-one name="meetingrecommend" class="com.pojo.Meetingrecommend" fetch="select">
-            <column name="meeting_recommend_id" not-null="true" />
+        <many-to-one name="empanel" class="com.pojo.Empanel" fetch="select">
+            <column name="empanel_id" not-null="true" />
         </many-to-one>
         <property name="total" type="java.lang.Integer">
             <column name="total" not-null="true" />

@@ -1,3 +1,4 @@
+<!-- 进行中的选任工作 -->
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%
 	String path = request.getContextPath();
@@ -92,7 +93,7 @@
 				<li class=" "><a href="javascript:;"> <i class="icon-group"></i> <span class="title">事务管理</span> <span class=""></span> <span class="arrow"></span> </a>
 
 					<ul class="sub-menu">
-						<li class=""><a href="">选任流程管理</a>
+						<li class=""><a href="selection_process_management.do">选任流程管理</a>
 						</li>
 						<li class=""><a href="PSG_management.do">常设考察组管理</a></li>
 						<li class=""><a href="">临时考察组管理</a></li>
@@ -151,7 +152,7 @@
 							<c:forEach items="${empanel }" var="uv">
 								<tr>
 									<td>${uv.type }</td>
-									<td>${uv.status }</td>
+									<td>${uv.empanelConfig.configName}</td>
 									<td>${uv.name }</td>
 									<td>${uv.flow }</td>
 									<td><a href="preview_empanel_detail.do?empanelId=${uv.id }">进入查看</a></td>

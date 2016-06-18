@@ -10,11 +10,13 @@
             <column name="id" />
             <generator class="identity" />
         </id>
+        <many-to-one name="empanelConfig" class="com.pojo.EmpanelConfig" fetch="select" lazy="false">
+            <column name="status" not-null="true">
+                <comment>外键关联到empanel_config</comment>
+            </column>
+        </many-to-one>
         <property name="name" type="java.lang.String">
             <column name="name" length="20" not-null="true" />
-        </property>
-        <property name="status" type="java.lang.String">
-            <column name="status" length="200" />
         </property>
         <property name="type" type="java.lang.String">
             <column name="type" length="200" />
@@ -52,11 +54,25 @@
                 <comment>删除位，若为1则表示该选任工作已经过时无效，是历史选任工作</comment>
             </column>
         </property>
+        <set name="talkrecommendStates" inverse="true">
+            <key>
+                <column name="empanel_id" not-null="true">
+                    <comment>选任id，外键</comment>
+                </column>
+            </key>
+            <one-to-many class="com.pojo.TalkrecommendState" />
+        </set>
         <set name="entryforms" inverse="true">
             <key>
                 <column name="empanel_id" />
             </key>
             <one-to-many class="com.pojo.Entryform" />
+        </set>
+        <set name="meetingrecommendStates" inverse="true">
+            <key>
+                <column name="empanel_id" not-null="true" />
+            </key>
+            <one-to-many class="com.pojo.MeetingrecommendState" />
         </set>
         <set name="empanelJobs" inverse="true">
             <key>

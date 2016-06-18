@@ -12,8 +12,8 @@ public class Empanel implements java.io.Serializable {
 	// Fields
 
 	private Integer id;
+	private EmpanelConfig empanelConfig;
 	private String name;
-	private String status;
 	private String type;
 	private String flow;
 	private String startTime;
@@ -22,7 +22,9 @@ public class Empanel implements java.io.Serializable {
 	private Integer avgMaxNum;
 	private Short isRealease;
 	private Short delFlag;
+	private Set talkrecommendStates = new HashSet(0);
 	private Set entryforms = new HashSet(0);
+	private Set meetingrecommendStates = new HashSet(0);
 	private Set empanelJobs = new HashSet(0);
 
 	// Constructors
@@ -32,17 +34,18 @@ public class Empanel implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Empanel(String name, Short isRealease, Short delFlag) {
+	public Empanel(EmpanelConfig empanelConfig, String name, Short isRealease, Short delFlag) {
+		this.empanelConfig = empanelConfig;
 		this.name = name;
 		this.isRealease = isRealease;
 		this.delFlag = delFlag;
 	}
 
 	/** full constructor */
-	public Empanel(String name, String status, String type, String flow, String startTime, String endTime, String plan, Integer avgMaxNum, Short isRealease, Short delFlag,
-			Set entryforms, Set empanelJobs) {
+	public Empanel(EmpanelConfig empanelConfig, String name, String type, String flow, String startTime, String endTime, String plan, Integer avgMaxNum, Short isRealease,
+			Short delFlag, Set talkrecommendStates, Set entryforms, Set meetingrecommendStates, Set empanelJobs) {
+		this.empanelConfig = empanelConfig;
 		this.name = name;
-		this.status = status;
 		this.type = type;
 		this.flow = flow;
 		this.startTime = startTime;
@@ -51,7 +54,9 @@ public class Empanel implements java.io.Serializable {
 		this.avgMaxNum = avgMaxNum;
 		this.isRealease = isRealease;
 		this.delFlag = delFlag;
+		this.talkrecommendStates = talkrecommendStates;
 		this.entryforms = entryforms;
+		this.meetingrecommendStates = meetingrecommendStates;
 		this.empanelJobs = empanelJobs;
 	}
 
@@ -65,20 +70,20 @@ public class Empanel implements java.io.Serializable {
 		this.id = id;
 	}
 
+	public EmpanelConfig getEmpanelConfig() {
+		return this.empanelConfig;
+	}
+
+	public void setEmpanelConfig(EmpanelConfig empanelConfig) {
+		this.empanelConfig = empanelConfig;
+	}
+
 	public String getName() {
 		return this.name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getStatus() {
-		return this.status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
 	}
 
 	public String getType() {
@@ -145,12 +150,28 @@ public class Empanel implements java.io.Serializable {
 		this.delFlag = delFlag;
 	}
 
+	public Set getTalkrecommendStates() {
+		return this.talkrecommendStates;
+	}
+
+	public void setTalkrecommendStates(Set talkrecommendStates) {
+		this.talkrecommendStates = talkrecommendStates;
+	}
+
 	public Set getEntryforms() {
 		return this.entryforms;
 	}
 
 	public void setEntryforms(Set entryforms) {
 		this.entryforms = entryforms;
+	}
+
+	public Set getMeetingrecommendStates() {
+		return this.meetingrecommendStates;
+	}
+
+	public void setMeetingrecommendStates(Set meetingrecommendStates) {
+		this.meetingrecommendStates = meetingrecommendStates;
 	}
 
 	public Set getEmpanelJobs() {

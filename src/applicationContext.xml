@@ -72,9 +72,6 @@
     
      <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <!--  Hibernate3 注释方式的POJO  直接指定包路径
-        <property name="packagesToScan" value="com.cadre.model*" ></property>
-        -->
  		<property name="mappingLocations">
 			<value>classpath*:com/pojo/**/*.hbm.xml</value>
    	 	</property>
